@@ -16,15 +16,13 @@ import hashlib
 # Load environment variables inside Docker container
 load_dotenv("/opt/airflow/.env")
 
-LOCAL_PATH = os.getenv("LOCAL_PATH")
-DB_CONN_STR = os.getenv("DB_CONN_STR")
-
 def hash_record(record):
     return hashlib.sha256(json.dumps(record, sort_keys=True).encode()).hexdigest()
 
 def download_json():
     try:
         S3_URL = os.getenv("S3_URL")
+        LOCAL_PATH = os.getenv("LOCAL_PATH")
         logging.info(f"Downloading data from {S3_URL}")
         
         response = requests.get(S3_URL)
@@ -39,8 +37,10 @@ def download_json():
         raise
 
 def load_to_postgres():
-
     try:
+        LOCAL_PATH = os.getenv("LOCAL_PATH")
+        DB_CONN_STR = os.getenv("DB_CONN_STR")
+
         logging.info(f"Reading file from {LOCAL_PATH}")
         with open(LOCAL_PATH) as f:
             data = json.load(f)
@@ -88,8 +88,7 @@ def load_to_postgres():
         logging.info(f"Valid records: {len(valid_records)}") 
         logging.info(f"Invalid records: {len(invalid_records)}")  
 
-        # Combine valid and invalid records into a single DataFrame for full traceability
-
+        # 📦 Combina válidos e inválidos en un solo dataframe para rastreabilidad completa
         all_records_df = pd.DataFrame(valid_records + invalid_records)
 
         engine = create_engine(DB_CONN_STR)
