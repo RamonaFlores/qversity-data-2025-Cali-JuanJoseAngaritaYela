@@ -36,6 +36,9 @@ jobs:
         run: |
           pip install apache-airflow==2.7.3 pandas dbt-core dbt-postgres pytest psycopg2-binary python-dotenv
 
+      - name: Ensure airflow/data directory exists
+        run: mkdir -p airflow/data
+
       - name: Set environment variables
         run: |
           echo "S3_URL=https://jsonplaceholder.typicode.com/users" >> $GITHUB_ENV

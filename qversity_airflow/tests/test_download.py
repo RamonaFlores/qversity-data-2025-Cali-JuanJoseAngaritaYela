@@ -3,10 +3,9 @@ import sys
 from pathlib import Path
 import pytest
 import builtins
-from requests.exceptions import HTTPError  # ✅ Necesario para el test de URL inválida
+from requests.exceptions import HTTPError, MissingSchema
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from qversity_airflow.dags.ingest_customer_data_dag import download_json
-from dotenv import load_dotenv
 
 
 def test_download_creates_file(tmp_path, monkeypatch):
@@ -34,7 +33,7 @@ def test_download_missing_url(monkeypatch):
     monkeypatch.delenv("S3_URL", raising=False)
     monkeypatch.setenv("LOCAL_PATH", "/tmp/dummy.json")
 
-    with pytest.raises(TypeError):
+    with pytest.raises(MissingSchema):
         download_json()
 
 
