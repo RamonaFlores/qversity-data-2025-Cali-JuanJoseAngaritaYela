@@ -4,10 +4,10 @@ rootdir: /home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity
 plugins: anyio-4.9.0
 collected 7 items
 
-airflow/tests/test_dag_loading.py F                                      [ 14%]
-airflow/tests/test_dag_structure.py F                                    [ 28%]
-airflow/tests/test_download.py F.FF                                      [ 85%]
-airflow/tests/test_validate_data.py F                                    [100%]
+qversity_airflow/tests/test_dag_loading.py F                             [ 14%]
+qversity_airflow/tests/test_dag_structure.py F                           [ 28%]
+qversity_airflow/tests/test_download.py F.F.                             [ 85%]
+qversity_airflow/tests/test_validate_data.py F                           [100%]
 
 =================================== FAILURES ===================================
 _______________________________ test_dag_loaded ________________________________
@@ -19,13 +19,13 @@ _______________________________ test_dag_loaded ________________________________
 >       assert not dag_bag.import_errors, f"Errores al importar los DAGs: {dag_bag.import_errors}"
 E       AssertionError: Errores al importar los DAGs: {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py': 'Traceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlite3.OperationalError: no such table: slot_pool\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool\n[SQL: SELECT slot_pool.id AS slot_pool_id, slot_pool.pool AS slot_pool_pool, slot_pool.slots AS slot_pool_slots, slot_pool.description AS slot_pool_description, slot_pool.include_deferred AS slot_pool_include_deferred \nFROM slot_pool \nWHERE slot_pool.slots = ? AND slot_pool.pool = ?\n LIMIT ? OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'}
 E       assert not {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'}
-E        +  where {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'} = <airflow.models.dagbag.DagBag object at 0x7f2ca834a8d0>.import_errors
+E        +  where {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'} = <airflow.models.dagbag.DagBag object at 0x7f01dad3e250>.import_errors
 
-airflow/tests/test_dag_loading.py:7: AssertionError
+qversity_airflow/tests/test_dag_loading.py:7: AssertionError
 ----------------------------- Captured stdout call -----------------------------
-[2025-06-14T21:47:39.796+0000] {dagbag.py:536} INFO - Filling up the DagBag from /home/runner/airflow/dags
-[2025-06-14T21:47:39.850+0000] {example_python_operator.py:86} WARNING - The virtalenv_python example task requires virtualenv, please install it.
-[2025-06-14T21:47:40.081+0000] {dagbag.py:346} ERROR - Failed to import: /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py
+[2025-06-14T22:29:39.757+0000] {dagbag.py:536} INFO - Filling up the DagBag from /home/runner/airflow/dags
+[2025-06-14T22:29:39.815+0000] {example_python_operator.py:86} WARNING - The virtalenv_python example task requires virtualenv, please install it.
+[2025-06-14T22:29:39.980+0000] {dagbag.py:346} ERROR - Failed to import: /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py
 Traceback (most recent call last):
   File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
     self.dialect.do_execute(
@@ -89,14 +89,14 @@ WHERE slot_pool.slots = ? AND slot_pool.pool = ?
  LIMIT ? OFFSET ?]
 [parameters: (1, 'default_pool', 1, 0)]
 (Background on this error at: https://sqlalche.me/e/14/e3q8)
-[2025-06-14T21:47:40.094+0000] {tutorial_taskflow_api_virtualenv.py:29} WARNING - The tutorial_taskflow_api_virtualenv example DAG requires virtualenv, please install it.
-[2025-06-14T21:47:40.119+0000] {example_local_kubernetes_executor.py:39} WARNING - Could not import DAGs in example_local_kubernetes_executor.py
+[2025-06-14T22:29:39.993+0000] {tutorial_taskflow_api_virtualenv.py:29} WARNING - The tutorial_taskflow_api_virtualenv example DAG requires virtualenv, please install it.
+[2025-06-14T22:29:40.016+0000] {example_local_kubernetes_executor.py:39} WARNING - Could not import DAGs in example_local_kubernetes_executor.py
 Traceback (most recent call last):
   File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_local_kubernetes_executor.py", line 37, in <module>
     from kubernetes.client import models as k8s
 ModuleNotFoundError: No module named 'kubernetes'
-[2025-06-14T21:47:40.120+0000] {example_local_kubernetes_executor.py:40} WARNING - Install Kubernetes dependencies with: pip install apache-airflow[cncf.kubernetes]
-[2025-06-14T21:47:40.158+0000] {example_kubernetes_executor.py:38} WARNING - The example_kubernetes_executor example DAG requires the kubernetes provider. Please install it with: pip install apache-airflow[cncf.kubernetes]
+[2025-06-14T22:29:40.017+0000] {example_local_kubernetes_executor.py:40} WARNING - Install Kubernetes dependencies with: pip install apache-airflow[cncf.kubernetes]
+[2025-06-14T22:29:40.054+0000] {example_kubernetes_executor.py:38} WARNING - The example_kubernetes_executor example DAG requires the kubernetes provider. Please install it with: pip install apache-airflow[cncf.kubernetes]
 ------------------------------ Captured log call -------------------------------
 INFO     airflow.models.dagbag.DagBag:dagbag.py:536 Filling up the DagBag from /home/runner/airflow/dags
 WARNING  unusual_prefix_7c678b54895f2476e6775ff0a937f591873a63c6_example_python_operator:example_python_operator.py:86 The virtalenv_python example task requires virtualenv, please install it.
@@ -174,19 +174,19 @@ WARNING  unusual_prefix_ec378865a293772410c21d48c2ac2c9be5639437_example_local_k
 WARNING  unusual_prefix_a0ab0c73dc34ccb5ff0bb0c57e5da3a730cd533d_example_kubernetes_executor:example_kubernetes_executor.py:38 The example_kubernetes_executor example DAG requires the kubernetes provider. Please install it with: pip install apache-airflow[cncf.kubernetes]
 _______________________________ test_dag_loaded ________________________________
 
-self = <sqlalchemy.future.engine.Connection object at 0x7f2ca684d650>
-dialect = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x7f2cb2c03cd0>
+self = <sqlalchemy.future.engine.Connection object at 0x7f01d836c290>
+dialect = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x7f01e703c850>
 constructor = <bound method DefaultExecutionContext._init_compiled of <class 'sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext'>>
 statement = 'SELECT dag.dag_id, dag.root_dag_id, dag.is_paused, dag.is_subdag, dag.is_active, dag.last_parsed_time, dag.last_pickl...data_interval_start, dag.next_dagrun_data_interval_end, dag.next_dagrun_create_after \nFROM dag \nWHERE dag.dag_id = ?'
 parameters = ('ingest_customers_data_dag',)
 execution_options = immutabledict({'_result_disable_adapt_to_context': True, 'future_result': True})
-args = (<sqlalchemy.dialects.sqlite.base.SQLiteCompiler object at 0x7f2ca684d8d0>, [{}], <sqlalchemy.sql.selectable.Select ob... 0x7f2ca684fe90>, [BindParameter('%(139829749055888 dag_id)s', 'ingest_customers_data_dag', type_=String(length=250))])
+args = (<sqlalchemy.dialects.sqlite.base.SQLiteCompiler object at 0x7f01d84156d0>, [{}], <sqlalchemy.sql.selectable.Select ob... 0x7f01d8349050>, [BindParameter('%(139645899162960 dag_id)s', 'ingest_customers_data_dag', type_=String(length=250))])
 kw = {'cache_hit': symbol('CACHE_MISS')}
-branched = <sqlalchemy.future.engine.Connection object at 0x7f2ca684d650>
+branched = <sqlalchemy.future.engine.Connection object at 0x7f01d836c290>
 yp = None
-conn = <sqlalchemy.pool.base._ConnectionFairy object at 0x7f2ca6858f10>
-context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x7f2ca69013d0>
-cursor = <sqlite3.Cursor object at 0x7f2ca68483c0>, evt_handled = False
+conn = <sqlalchemy.pool.base._ConnectionFairy object at 0x7f01d836c150>
+context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x7f01d84add50>
+cursor = <sqlite3.Cursor object at 0x7f01d835c640>, evt_handled = False
 
     def _execute_context(
         self,
@@ -327,11 +327,11 @@ cursor = <sqlite3.Cursor object at 0x7f2ca68483c0>, evt_handled = False
 /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:1910: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x7f2cb2c03cd0>
-cursor = <sqlite3.Cursor object at 0x7f2ca68483c0>
+self = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x7f01e703c850>
+cursor = <sqlite3.Cursor object at 0x7f01d835c640>
 statement = 'SELECT dag.dag_id, dag.root_dag_id, dag.is_paused, dag.is_subdag, dag.is_active, dag.last_parsed_time, dag.last_pickl...data_interval_start, dag.next_dagrun_data_interval_end, dag.next_dagrun_create_after \nFROM dag \nWHERE dag.dag_id = ?'
 parameters = ('ingest_customers_data_dag',)
-context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x7f2ca69013d0>
+context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x7f01d84add50>
 
     def do_execute(self, cursor, statement, parameters, context=None):
 >       cursor.execute(statement, parameters)
@@ -346,7 +346,7 @@ The above exception was the direct cause of the following exception:
 >       dag = dag_bag.get_dag("ingest_customers_data_dag")
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-airflow/tests/test_dag_structure.py:5: 
+qversity_airflow/tests/test_dag_structure.py:5: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/utils/session.py:79: in wrapper
     return func(*args, session=session, **kwargs)
@@ -382,11 +382,11 @@ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     self.dialect.do_execute(
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x7f2cb2c03cd0>
-cursor = <sqlite3.Cursor object at 0x7f2ca68483c0>
+self = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x7f01e703c850>
+cursor = <sqlite3.Cursor object at 0x7f01d835c640>
 statement = 'SELECT dag.dag_id, dag.root_dag_id, dag.is_paused, dag.is_subdag, dag.is_active, dag.last_parsed_time, dag.last_pickl...data_interval_start, dag.next_dagrun_data_interval_end, dag.next_dagrun_create_after \nFROM dag \nWHERE dag.dag_id = ?'
 parameters = ('ingest_customers_data_dag',)
-context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x7f2ca69013d0>
+context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x7f01d84add50>
 
     def do_execute(self, cursor, statement, parameters, context=None):
 >       cursor.execute(statement, parameters)
@@ -399,9 +399,9 @@ E       (Background on this error at: https://sqlalche.me/e/14/e3q8)
 
 /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py:736: OperationalError
 ----------------------------- Captured stdout call -----------------------------
-[2025-06-14T21:47:40.251+0000] {dagbag.py:536} INFO - Filling up the DagBag from /home/runner/airflow/dags
-[2025-06-14T21:47:40.267+0000] {example_python_operator.py:86} WARNING - The virtalenv_python example task requires virtualenv, please install it.
-[2025-06-14T21:47:40.283+0000] {dagbag.py:346} ERROR - Failed to import: /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py
+[2025-06-14T22:29:40.147+0000] {dagbag.py:536} INFO - Filling up the DagBag from /home/runner/airflow/dags
+[2025-06-14T22:29:40.162+0000] {example_python_operator.py:86} WARNING - The virtalenv_python example task requires virtualenv, please install it.
+[2025-06-14T22:29:40.177+0000] {dagbag.py:346} ERROR - Failed to import: /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py
 Traceback (most recent call last):
   File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
     self.dialect.do_execute(
@@ -465,14 +465,14 @@ WHERE slot_pool.slots = ? AND slot_pool.pool = ?
  LIMIT ? OFFSET ?]
 [parameters: (1, 'default_pool', 1, 0)]
 (Background on this error at: https://sqlalche.me/e/14/e3q8)
-[2025-06-14T21:47:40.292+0000] {tutorial_taskflow_api_virtualenv.py:29} WARNING - The tutorial_taskflow_api_virtualenv example DAG requires virtualenv, please install it.
-[2025-06-14T21:47:40.313+0000] {example_local_kubernetes_executor.py:39} WARNING - Could not import DAGs in example_local_kubernetes_executor.py
+[2025-06-14T22:29:40.187+0000] {tutorial_taskflow_api_virtualenv.py:29} WARNING - The tutorial_taskflow_api_virtualenv example DAG requires virtualenv, please install it.
+[2025-06-14T22:29:40.207+0000] {example_local_kubernetes_executor.py:39} WARNING - Could not import DAGs in example_local_kubernetes_executor.py
 Traceback (most recent call last):
   File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_local_kubernetes_executor.py", line 37, in <module>
     from kubernetes.client import models as k8s
 ModuleNotFoundError: No module named 'kubernetes'
-[2025-06-14T21:47:40.314+0000] {example_local_kubernetes_executor.py:40} WARNING - Install Kubernetes dependencies with: pip install apache-airflow[cncf.kubernetes]
-[2025-06-14T21:47:40.348+0000] {example_kubernetes_executor.py:38} WARNING - The example_kubernetes_executor example DAG requires the kubernetes provider. Please install it with: pip install apache-airflow[cncf.kubernetes]
+[2025-06-14T22:29:40.208+0000] {example_local_kubernetes_executor.py:40} WARNING - Install Kubernetes dependencies with: pip install apache-airflow[cncf.kubernetes]
+[2025-06-14T22:29:40.241+0000] {example_kubernetes_executor.py:38} WARNING - The example_kubernetes_executor example DAG requires the kubernetes provider. Please install it with: pip install apache-airflow[cncf.kubernetes]
 ------------------------------ Captured log call -------------------------------
 INFO     airflow.models.dagbag.DagBag:dagbag.py:536 Filling up the DagBag from /home/runner/airflow/dags
 WARNING  unusual_prefix_7c678b54895f2476e6775ff0a937f591873a63c6_example_python_operator:example_python_operator.py:86 The virtalenv_python example task requires virtualenv, please install it.
@@ -551,7 +551,7 @@ WARNING  unusual_prefix_a0ab0c73dc34ccb5ff0bb0c57e5da3a730cd533d_example_kuberne
 __________________________ test_download_creates_file __________________________
 
 tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-0/test_download_creates_file0')
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca68d8050>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f01d858e210>
 
     def test_download_creates_file(tmp_path, monkeypatch):
         monkeypatch.setenv("S3_URL", "https://jsonplaceholder.typicode.com/users")
@@ -560,7 +560,7 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca68d8050>
     
 >       download_json()
 
-airflow/tests/test_download.py:19: 
+qversity_airflow/tests/test_download.py:17: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
     def download_json():
@@ -575,16 +575,16 @@ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
                  ^^^^^^^^^^^^^^^^^^^^^
 E           FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
 
-airflow/dags/ingest_customer_data_dag.py:33: FileNotFoundError
+qversity_airflow/dags/ingest_customer_data_dag.py:33: FileNotFoundError
 ----------------------------- Captured stdout call -----------------------------
-[2025-06-14T21:47:40.640+0000] {ingest_customer_data_dag.py:28} INFO - Downloading data from https://jsonplaceholder.typicode.com/users
-[2025-06-14T21:47:40.730+0000] {ingest_customer_data_dag.py:38} ERROR - Failed to download file: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+[2025-06-14T22:29:40.527+0000] {ingest_customer_data_dag.py:28} INFO - Downloading data from https://jsonplaceholder.typicode.com/users
+[2025-06-14T22:29:40.606+0000] {ingest_customer_data_dag.py:38} ERROR - Failed to download file: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
 ------------------------------ Captured log call -------------------------------
 INFO     root:ingest_customer_data_dag.py:28 Downloading data from https://jsonplaceholder.typicode.com/users
 ERROR    root:ingest_customer_data_dag.py:38 Failed to download file: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
 __________________________ test_download_missing_url ___________________________
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca68c0f10>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f01d89221d0>
 
     def test_download_missing_url(monkeypatch):
         monkeypatch.delenv("S3_URL", raising=False)
@@ -593,9 +593,9 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca68c0f10>
         with pytest.raises(TypeError):
 >           download_json()
 
-airflow/tests/test_download.py:40: 
+qversity_airflow/tests/test_download.py:38: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-airflow/dags/ingest_customer_data_dag.py:30: in download_json
+qversity_airflow/dags/ingest_customer_data_dag.py:30: in download_json
     response = requests.get(S3_URL)
                ^^^^^^^^^^^^^^^^^^^^
 /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/requests/api.py:73: in get
@@ -652,48 +652,15 @@ E           requests.exceptions.MissingSchema: Invalid URL 'None': No scheme sup
 
 /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/requests/models.py:438: MissingSchema
 ----------------------------- Captured stdout call -----------------------------
-[2025-06-14T21:47:40.995+0000] {ingest_customer_data_dag.py:28} INFO - Downloading data from None
-[2025-06-14T21:47:40.996+0000] {ingest_customer_data_dag.py:38} ERROR - Failed to download file: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+[2025-06-14T22:29:40.688+0000] {ingest_customer_data_dag.py:28} INFO - Downloading data from None
+[2025-06-14T22:29:40.688+0000] {ingest_customer_data_dag.py:38} ERROR - Failed to download file: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
 ------------------------------ Captured log call -------------------------------
 INFO     root:ingest_customer_data_dag.py:28 Downloading data from None
 ERROR    root:ingest_customer_data_dag.py:38 Failed to download file: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
-________________________ test_download_unwritable_path _________________________
-
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca67b87d0>
-
-    def test_download_unwritable_path(monkeypatch):
-        monkeypatch.setenv("S3_URL", "https://jsonplaceholder.typicode.com/users")
-        monkeypatch.setenv("LOCAL_PATH", "/root/forbidden.json")  # Simula falta de permisos
-    
-        with pytest.raises(PermissionError):
->           download_json()
-
-airflow/tests/test_download.py:48: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-    def download_json():
-        try:
-            S3_URL = os.getenv("S3_URL")
-            logging.info(f"Downloading data from {S3_URL}")
-    
-            response = requests.get(S3_URL)
-            response.raise_for_status()
-    
->           with open(LOCAL_PATH, "w") as f:
-                 ^^^^^^^^^^^^^^^^^^^^^
-E           FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
-
-airflow/dags/ingest_customer_data_dag.py:33: FileNotFoundError
------------------------------ Captured stdout call -----------------------------
-[2025-06-14T21:47:41.022+0000] {ingest_customer_data_dag.py:28} INFO - Downloading data from https://jsonplaceholder.typicode.com/users
-[2025-06-14T21:47:41.060+0000] {ingest_customer_data_dag.py:38} ERROR - Failed to download file: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
------------------------------- Captured log call -------------------------------
-INFO     root:ingest_customer_data_dag.py:28 Downloading data from https://jsonplaceholder.typicode.com/users
-ERROR    root:ingest_customer_data_dag.py:38 Failed to download file: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
 __________________________ test_data_exists_in_bronze __________________________
 
 self = Engine(***postgres/qversity)
-fn = <bound method Pool.connect of <sqlalchemy.pool.impl.QueuePool object at 0x7f2ca67ba610>>
+fn = <bound method Pool.connect of <sqlalchemy.pool.impl.QueuePool object at 0x7f01d83e2050>>
 connection = None
 
     def _wrap_pool_connect(self, fn, connection):
@@ -799,7 +766,7 @@ E       psycopg2.OperationalError: could not translate host name "postgres" to a
 
 The above exception was the direct cause of the following exception:
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca711d3d0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f01d83e1dd0>
 
     def test_data_exists_in_bronze(monkeypatch):
         monkeypatch.setenv("DB_CONN_STR", "***postgres/qversity")
@@ -808,7 +775,7 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca711d3d0>
 >       with engine.connect() as conn:
              ^^^^^^^^^^^^^^^^
 
-airflow/tests/test_validate_data.py:11: 
+qversity_airflow/tests/test_validate_data.py:11: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:3325: in connect
     return self._connection_cls(self, close_with_result=close_with_result)
@@ -923,31 +890,30 @@ E       (Background on this error at: https://sqlalche.me/e/14/e3q8)
 
 /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/psycopg2/__init__.py:122: OperationalError
 =============================== warnings summary ===============================
-airflow/tests/test_dag_loading.py::test_dag_loaded
+qversity_airflow/tests/test_dag_loading.py::test_dag_loaded
   /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pydantic/_internal/_config.py:323: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
     warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
 
-airflow/tests/test_dag_loading.py::test_dag_loaded
+qversity_airflow/tests/test_dag_loading.py::test_dag_loaded
   /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
   * 'orm_mode' has been renamed to 'from_attributes'
     warnings.warn(message, UserWarning)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ============================
-FAILED airflow/tests/test_dag_loading.py::test_dag_loaded - AssertionError: Errores al importar los DAGs: {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py': 'Traceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlite3.OperationalError: no such table: slot_pool\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool\n[SQL: SELECT slot_pool.id AS slot_pool_id, slot_pool.pool AS slot_pool_pool, slot_pool.slots AS slot_pool_slots, slot_pool.description AS slot_pool_description, slot_pool.include_deferred AS slot_pool_include_deferred \nFROM slot_pool \nWHERE slot_pool.slots = ? AND slot_pool.pool = ?\n LIMIT ? OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'}
+FAILED qversity_airflow/tests/test_dag_loading.py::test_dag_loaded - AssertionError: Errores al importar los DAGs: {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py': 'Traceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlite3.OperationalError: no such table: slot_pool\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool\n[SQL: SELECT slot_pool.id AS slot_pool_id, slot_pool.pool AS slot_pool_pool, slot_pool.slots AS slot_pool_slots, slot_pool.description AS slot_pool_description, slot_pool.include_deferred AS slot_pool_include_deferred \nFROM slot_pool \nWHERE slot_pool.slots = ? AND slot_pool.pool = ?\n LIMIT ? OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'}
 assert not {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'}
- +  where {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'} = <airflow.models.dagbag.DagBag object at 0x7f2ca834a8d0>.import_errors
-FAILED airflow/tests/test_dag_structure.py::test_dag_loaded - sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: dag
+ +  where {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'} = <airflow.models.dagbag.DagBag object at 0x7f01dad3e250>.import_errors
+FAILED qversity_airflow/tests/test_dag_structure.py::test_dag_loaded - sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: dag
 [SQL: SELECT dag.dag_id, dag.root_dag_id, dag.is_paused, dag.is_subdag, dag.is_active, dag.last_parsed_time, dag.last_pickled, dag.last_expired, dag.scheduler_lock, dag.pickle_id, dag.fileloc, dag.processor_subdir, dag.owners, dag.description, dag.default_view, dag.schedule_interval, dag.timetable_description, dag.max_active_tasks, dag.max_active_runs, dag.has_task_concurrency_limits, dag.has_import_errors, dag.next_dagrun, dag.next_dagrun_data_interval_start, dag.next_dagrun_data_interval_end, dag.next_dagrun_create_after 
 FROM dag 
 WHERE dag.dag_id = ?]
 [parameters: ('ingest_customers_data_dag',)]
 (Background on this error at: https://sqlalche.me/e/14/e3q8)
-FAILED airflow/tests/test_download.py::test_download_creates_file - FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
-FAILED airflow/tests/test_download.py::test_download_missing_url - requests.exceptions.MissingSchema: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
-FAILED airflow/tests/test_download.py::test_download_unwritable_path - FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
-FAILED airflow/tests/test_validate_data.py::test_data_exists_in_bronze - sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
+FAILED qversity_airflow/tests/test_download.py::test_download_creates_file - FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+FAILED qversity_airflow/tests/test_download.py::test_download_missing_url - requests.exceptions.MissingSchema: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+FAILED qversity_airflow/tests/test_validate_data.py::test_data_exists_in_bronze - sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
 
 (Background on this error at: https://sqlalche.me/e/14/e3q8)
-=================== 6 failed, 1 passed, 2 warnings in 3.63s ====================
+=================== 5 failed, 2 passed, 2 warnings in 2.83s ====================
 Error: Process completed with exit code 1.
