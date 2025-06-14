@@ -3,10 +3,10 @@ import sys
 from pathlib import Path
 import pytest
 from requests.exceptions import HTTPError  # ✅ Necesario para el test de URL inválida
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# 👇 Asegura que 'dags' pueda ser importado desde GitHub Actions o local
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-
+AIRFLOW_PATH = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(AIRFLOW_PATH))
 from dags.ingest_customer_data_dag import download_json
 from dotenv import load_dotenv
 
