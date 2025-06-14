@@ -49,5 +49,29 @@ def load_to_postgres():
         #Executes the command line
         conn.execute("CREATE SCHEMA IF NOT EXISTS bronze_layer;")
 
-        df.to_sqls("customers_raw",con=conn, schema="bronze",if_exists="replace",index=False)
+        df.to_sql("customers_raw",con=conn, schema="bronze",if_exists="replace",index=False)
         print("Data loaded into bronze.customers_raw")
+
+
+
+#Airflow DAG configuration 
+default_args= {
+    "owner":"Juan_Angarita",
+    "start_date": datetime(2024,1,1),
+    "retries":1,
+    "retry_delay": timedelta(minutes=5)
+}
+
+with DAG(
+    dag_id="ingest_customers_data_dag",
+    default_args=default_args,
+    description="Downloads the bronze layer JSON from S3 and loads it into Postgresql",
+    schedule_interval=None,
+    catchup=False
+) as dag:
+    task_1=PythonOperator(task_id="download_json",
+                      python_callable=download_json)
+    task_2=PythonOperator(task_id="load_to_postgres",
+                          python_callable=load_to_postgres)
+    
+    task_1 >> task_2
