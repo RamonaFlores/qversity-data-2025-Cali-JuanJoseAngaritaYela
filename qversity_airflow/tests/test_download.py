@@ -8,18 +8,20 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from qversity_airflow.dags.ingest_customer_data_dag import download_json
 
 
-def test_download_creates_file(tmp_path, monkeypatch):
+def test_download_creates_file(monkeypatch):
+    temp_path = Path("airflow/data/temp_test.json")
     monkeypatch.setenv("S3_URL", "https://jsonplaceholder.typicode.com/users")
-    test_file = tmp_path / "data.json"
-    monkeypatch.setenv("LOCAL_PATH", str(test_file))
+    monkeypatch.setenv("LOCAL_PATH", str(temp_path))
+
+    if temp_path.exists():
+        temp_path.unlink()
 
     download_json()
 
-    assert os.path.exists(test_file)
-    with open(test_file) as f:
+    assert temp_path.exists()
+    with open(temp_path) as f:
         content = f.read()
         assert "username" in content or "name" in content
-
 
 def test_download_invalid_url(monkeypatch, tmp_path):
     monkeypatch.setenv("S3_URL", "https://jsonplaceholder.typicode.com/invalid_url")
