@@ -1,0 +1,953 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.12, pytest-8.4.0, pluggy-1.6.0
+rootdir: /home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela
+plugins: anyio-4.9.0
+collected 7 items
+
+airflow/tests/test_dag_loading.py F                                      [ 14%]
+airflow/tests/test_dag_structure.py F                                    [ 28%]
+airflow/tests/test_download.py F.FF                                      [ 85%]
+airflow/tests/test_validate_data.py F                                    [100%]
+
+=================================== FAILURES ===================================
+_______________________________ test_dag_loaded ________________________________
+
+    def test_dag_loaded():
+        dag_bag = DagBag()
+    
+        # Asegúrate de que no haya errores de importación en los DAGs
+>       assert not dag_bag.import_errors, f"Errores al importar los DAGs: {dag_bag.import_errors}"
+E       AssertionError: Errores al importar los DAGs: {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py': 'Traceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlite3.OperationalError: no such table: slot_pool\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool\n[SQL: SELECT slot_pool.id AS slot_pool_id, slot_pool.pool AS slot_pool_pool, slot_pool.slots AS slot_pool_slots, slot_pool.description AS slot_pool_description, slot_pool.include_deferred AS slot_pool_include_deferred \nFROM slot_pool \nWHERE slot_pool.slots = ? AND slot_pool.pool = ?\n LIMIT ? OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'}
+E       assert not {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'}
+E        +  where {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'} = <airflow.models.dagbag.DagBag object at 0x7f2ca834a8d0>.import_errors
+
+airflow/tests/test_dag_loading.py:7: AssertionError
+----------------------------- Captured stdout call -----------------------------
+[2025-06-14T21:47:39.796+0000] {dagbag.py:536} INFO - Filling up the DagBag from /home/runner/airflow/dags
+[2025-06-14T21:47:39.850+0000] {example_python_operator.py:86} WARNING - The virtalenv_python example task requires virtualenv, please install it.
+[2025-06-14T21:47:40.081+0000] {dagbag.py:346} ERROR - Failed to import: /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: slot_pool
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/dagbag.py", line 342, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py", line 43, in <module>
+    section_1 = SubDagOperator(
+                ^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 437, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/utils/session.py", line 79, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/operators/subdag.py", line 90, in __init__
+    self._validate_pool(session)
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/operators/subdag.py", line 115, in _validate_pool
+    pool = session.query(Pool).filter(Pool.slots == 1).filter(Pool.pool == self.pool).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2824, in first
+    return self.limit(1)._iter().first()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2916, in _iter
+    result = self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 1717, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1710, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1577, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool
+[SQL: SELECT slot_pool.id AS slot_pool_id, slot_pool.pool AS slot_pool_pool, slot_pool.slots AS slot_pool_slots, slot_pool.description AS slot_pool_description, slot_pool.include_deferred AS slot_pool_include_deferred 
+FROM slot_pool 
+WHERE slot_pool.slots = ? AND slot_pool.pool = ?
+ LIMIT ? OFFSET ?]
+[parameters: (1, 'default_pool', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+[2025-06-14T21:47:40.094+0000] {tutorial_taskflow_api_virtualenv.py:29} WARNING - The tutorial_taskflow_api_virtualenv example DAG requires virtualenv, please install it.
+[2025-06-14T21:47:40.119+0000] {example_local_kubernetes_executor.py:39} WARNING - Could not import DAGs in example_local_kubernetes_executor.py
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_local_kubernetes_executor.py", line 37, in <module>
+    from kubernetes.client import models as k8s
+ModuleNotFoundError: No module named 'kubernetes'
+[2025-06-14T21:47:40.120+0000] {example_local_kubernetes_executor.py:40} WARNING - Install Kubernetes dependencies with: pip install apache-airflow[cncf.kubernetes]
+[2025-06-14T21:47:40.158+0000] {example_kubernetes_executor.py:38} WARNING - The example_kubernetes_executor example DAG requires the kubernetes provider. Please install it with: pip install apache-airflow[cncf.kubernetes]
+------------------------------ Captured log call -------------------------------
+INFO     airflow.models.dagbag.DagBag:dagbag.py:536 Filling up the DagBag from /home/runner/airflow/dags
+WARNING  unusual_prefix_7c678b54895f2476e6775ff0a937f591873a63c6_example_python_operator:example_python_operator.py:86 The virtalenv_python example task requires virtualenv, please install it.
+ERROR    airflow.models.dagbag.DagBag:dagbag.py:346 Failed to import: /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: slot_pool
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/dagbag.py", line 342, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py", line 43, in <module>
+    section_1 = SubDagOperator(
+                ^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 437, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/utils/session.py", line 79, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/operators/subdag.py", line 90, in __init__
+    self._validate_pool(session)
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/operators/subdag.py", line 115, in _validate_pool
+    pool = session.query(Pool).filter(Pool.slots == 1).filter(Pool.pool == self.pool).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2824, in first
+    return self.limit(1)._iter().first()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2916, in _iter
+    result = self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 1717, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1710, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1577, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool
+[SQL: SELECT slot_pool.id AS slot_pool_id, slot_pool.pool AS slot_pool_pool, slot_pool.slots AS slot_pool_slots, slot_pool.description AS slot_pool_description, slot_pool.include_deferred AS slot_pool_include_deferred 
+FROM slot_pool 
+WHERE slot_pool.slots = ? AND slot_pool.pool = ?
+ LIMIT ? OFFSET ?]
+[parameters: (1, 'default_pool', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+WARNING  unusual_prefix_793ceaca2d97c9e41d58808ea8166718a60855cb_tutorial_taskflow_api_virtualenv:tutorial_taskflow_api_virtualenv.py:29 The tutorial_taskflow_api_virtualenv example DAG requires virtualenv, please install it.
+WARNING  unusual_prefix_ec378865a293772410c21d48c2ac2c9be5639437_example_local_kubernetes_executor:example_local_kubernetes_executor.py:39 Could not import DAGs in example_local_kubernetes_executor.py
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_local_kubernetes_executor.py", line 37, in <module>
+    from kubernetes.client import models as k8s
+ModuleNotFoundError: No module named 'kubernetes'
+WARNING  unusual_prefix_ec378865a293772410c21d48c2ac2c9be5639437_example_local_kubernetes_executor:example_local_kubernetes_executor.py:40 Install Kubernetes dependencies with: pip install apache-airflow[cncf.kubernetes]
+WARNING  unusual_prefix_a0ab0c73dc34ccb5ff0bb0c57e5da3a730cd533d_example_kubernetes_executor:example_kubernetes_executor.py:38 The example_kubernetes_executor example DAG requires the kubernetes provider. Please install it with: pip install apache-airflow[cncf.kubernetes]
+_______________________________ test_dag_loaded ________________________________
+
+self = <sqlalchemy.future.engine.Connection object at 0x7f2ca684d650>
+dialect = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x7f2cb2c03cd0>
+constructor = <bound method DefaultExecutionContext._init_compiled of <class 'sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext'>>
+statement = 'SELECT dag.dag_id, dag.root_dag_id, dag.is_paused, dag.is_subdag, dag.is_active, dag.last_parsed_time, dag.last_pickl...data_interval_start, dag.next_dagrun_data_interval_end, dag.next_dagrun_create_after \nFROM dag \nWHERE dag.dag_id = ?'
+parameters = ('ingest_customers_data_dag',)
+execution_options = immutabledict({'_result_disable_adapt_to_context': True, 'future_result': True})
+args = (<sqlalchemy.dialects.sqlite.base.SQLiteCompiler object at 0x7f2ca684d8d0>, [{}], <sqlalchemy.sql.selectable.Select ob... 0x7f2ca684fe90>, [BindParameter('%(139829749055888 dag_id)s', 'ingest_customers_data_dag', type_=String(length=250))])
+kw = {'cache_hit': symbol('CACHE_MISS')}
+branched = <sqlalchemy.future.engine.Connection object at 0x7f2ca684d650>
+yp = None
+conn = <sqlalchemy.pool.base._ConnectionFairy object at 0x7f2ca6858f10>
+context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x7f2ca69013d0>
+cursor = <sqlite3.Cursor object at 0x7f2ca68483c0>, evt_handled = False
+
+    def _execute_context(
+        self,
+        dialect,
+        constructor,
+        statement,
+        parameters,
+        execution_options,
+        *args,
+        **kw
+    ):
+        """Create an :class:`.ExecutionContext` and execute, returning
+        a :class:`_engine.CursorResult`."""
+    
+        branched = self
+        if self.__branch_from:
+            # if this is a "branched" connection, do everything in terms
+            # of the "root" connection, *except* for .close(), which is
+            # the only feature that branching provides
+            self = self.__branch_from
+    
+        if execution_options:
+            yp = execution_options.get("yield_per", None)
+            if yp:
+                execution_options = execution_options.union(
+                    {"stream_results": True, "max_row_buffer": yp}
+                )
+    
+        try:
+            conn = self._dbapi_connection
+            if conn is None:
+                conn = self._revalidate_connection()
+    
+            context = constructor(
+                dialect, self, conn, execution_options, *args, **kw
+            )
+        except (exc.PendingRollbackError, exc.ResourceClosedError):
+            raise
+        except BaseException as e:
+            self._handle_dbapi_exception(
+                e, util.text_type(statement), parameters, None, None
+            )
+    
+        if (
+            self._transaction
+            and not self._transaction.is_active
+            or (
+                self._nested_transaction
+                and not self._nested_transaction.is_active
+            )
+        ):
+            self._invalid_transaction()
+    
+        elif self._trans_context_manager:
+            TransactionalContext._trans_ctx_check(self)
+    
+        if self._is_future and self._transaction is None:
+            self._autobegin()
+    
+        context.pre_exec()
+    
+        if dialect.use_setinputsizes:
+            context._set_input_sizes()
+    
+        cursor, statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        if not context.executemany:
+            parameters = parameters[0]
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                statement, parameters = fn(
+                    self,
+                    cursor,
+                    statement,
+                    parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+    
+            self._log_info(statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        parameters, batches=10, ismulti=context.executemany
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]"
+                    % (stats,)
+                )
+    
+        evt_handled = False
+        try:
+            if context.executemany:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(cursor, statement, parameters, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor, statement, parameters, context
+                    )
+            elif not parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, statement, context
+                    )
+            else:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(cursor, statement, parameters, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, statement, parameters, context
+                    )
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:1910: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x7f2cb2c03cd0>
+cursor = <sqlite3.Cursor object at 0x7f2ca68483c0>
+statement = 'SELECT dag.dag_id, dag.root_dag_id, dag.is_paused, dag.is_subdag, dag.is_active, dag.last_parsed_time, dag.last_pickl...data_interval_start, dag.next_dagrun_data_interval_end, dag.next_dagrun_create_after \nFROM dag \nWHERE dag.dag_id = ?'
+parameters = ('ingest_customers_data_dag',)
+context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x7f2ca69013d0>
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+>       cursor.execute(statement, parameters)
+E       sqlite3.OperationalError: no such table: dag
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py:736: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+    def test_dag_loaded():
+        dag_bag = DagBag()
+>       dag = dag_bag.get_dag("ingest_customers_data_dag")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+airflow/tests/test_dag_structure.py:5: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/utils/session.py:79: in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/dagbag.py:235: in get_dag
+    orm_dag = DagModel.get_current(root_dag_id, session=session)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/utils/session.py:76: in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/dag.py:3521: in get_current
+    return session.scalar(select(cls).where(cls.dag_id == dag_id))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/session.py:1747: in scalar
+    return self.execute(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/session.py:1717: in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:1710: in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/sql/elements.py:334: in _execute_on_connection
+    return connection._execute_clauseelement(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:1577: in _execute_clauseelement
+    ret = self._execute_context(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:1953: in _execute_context
+    self._handle_dbapi_exception(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:2134: in _handle_dbapi_exception
+    util.raise_(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py:211: in raise_
+    raise exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:1910: in _execute_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x7f2cb2c03cd0>
+cursor = <sqlite3.Cursor object at 0x7f2ca68483c0>
+statement = 'SELECT dag.dag_id, dag.root_dag_id, dag.is_paused, dag.is_subdag, dag.is_active, dag.last_parsed_time, dag.last_pickl...data_interval_start, dag.next_dagrun_data_interval_end, dag.next_dagrun_create_after \nFROM dag \nWHERE dag.dag_id = ?'
+parameters = ('ingest_customers_data_dag',)
+context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x7f2ca69013d0>
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+>       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: dag
+E       [SQL: SELECT dag.dag_id, dag.root_dag_id, dag.is_paused, dag.is_subdag, dag.is_active, dag.last_parsed_time, dag.last_pickled, dag.last_expired, dag.scheduler_lock, dag.pickle_id, dag.fileloc, dag.processor_subdir, dag.owners, dag.description, dag.default_view, dag.schedule_interval, dag.timetable_description, dag.max_active_tasks, dag.max_active_runs, dag.has_task_concurrency_limits, dag.has_import_errors, dag.next_dagrun, dag.next_dagrun_data_interval_start, dag.next_dagrun_data_interval_end, dag.next_dagrun_create_after 
+E       FROM dag 
+E       WHERE dag.dag_id = ?]
+E       [parameters: ('ingest_customers_data_dag',)]
+E       (Background on this error at: https://sqlalche.me/e/14/e3q8)
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py:736: OperationalError
+----------------------------- Captured stdout call -----------------------------
+[2025-06-14T21:47:40.251+0000] {dagbag.py:536} INFO - Filling up the DagBag from /home/runner/airflow/dags
+[2025-06-14T21:47:40.267+0000] {example_python_operator.py:86} WARNING - The virtalenv_python example task requires virtualenv, please install it.
+[2025-06-14T21:47:40.283+0000] {dagbag.py:346} ERROR - Failed to import: /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: slot_pool
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/dagbag.py", line 342, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py", line 43, in <module>
+    section_1 = SubDagOperator(
+                ^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 437, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/utils/session.py", line 79, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/operators/subdag.py", line 90, in __init__
+    self._validate_pool(session)
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/operators/subdag.py", line 115, in _validate_pool
+    pool = session.query(Pool).filter(Pool.slots == 1).filter(Pool.pool == self.pool).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2824, in first
+    return self.limit(1)._iter().first()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2916, in _iter
+    result = self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 1717, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1710, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1577, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool
+[SQL: SELECT slot_pool.id AS slot_pool_id, slot_pool.pool AS slot_pool_pool, slot_pool.slots AS slot_pool_slots, slot_pool.description AS slot_pool_description, slot_pool.include_deferred AS slot_pool_include_deferred 
+FROM slot_pool 
+WHERE slot_pool.slots = ? AND slot_pool.pool = ?
+ LIMIT ? OFFSET ?]
+[parameters: (1, 'default_pool', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+[2025-06-14T21:47:40.292+0000] {tutorial_taskflow_api_virtualenv.py:29} WARNING - The tutorial_taskflow_api_virtualenv example DAG requires virtualenv, please install it.
+[2025-06-14T21:47:40.313+0000] {example_local_kubernetes_executor.py:39} WARNING - Could not import DAGs in example_local_kubernetes_executor.py
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_local_kubernetes_executor.py", line 37, in <module>
+    from kubernetes.client import models as k8s
+ModuleNotFoundError: No module named 'kubernetes'
+[2025-06-14T21:47:40.314+0000] {example_local_kubernetes_executor.py:40} WARNING - Install Kubernetes dependencies with: pip install apache-airflow[cncf.kubernetes]
+[2025-06-14T21:47:40.348+0000] {example_kubernetes_executor.py:38} WARNING - The example_kubernetes_executor example DAG requires the kubernetes provider. Please install it with: pip install apache-airflow[cncf.kubernetes]
+------------------------------ Captured log call -------------------------------
+INFO     airflow.models.dagbag.DagBag:dagbag.py:536 Filling up the DagBag from /home/runner/airflow/dags
+WARNING  unusual_prefix_7c678b54895f2476e6775ff0a937f591873a63c6_example_python_operator:example_python_operator.py:86 The virtalenv_python example task requires virtualenv, please install it.
+ERROR    airflow.models.dagbag.DagBag:dagbag.py:346 Failed to import: /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: slot_pool
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/dagbag.py", line 342, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py", line 43, in <module>
+    section_1 = SubDagOperator(
+                ^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 437, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/utils/session.py", line 79, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/operators/subdag.py", line 90, in __init__
+    self._validate_pool(session)
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/operators/subdag.py", line 115, in _validate_pool
+    pool = session.query(Pool).filter(Pool.slots == 1).filter(Pool.pool == self.pool).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2824, in first
+    return self.limit(1)._iter().first()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/query.py", line 2916, in _iter
+    result = self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 1717, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1710, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1577, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool
+[SQL: SELECT slot_pool.id AS slot_pool_id, slot_pool.pool AS slot_pool_pool, slot_pool.slots AS slot_pool_slots, slot_pool.description AS slot_pool_description, slot_pool.include_deferred AS slot_pool_include_deferred 
+FROM slot_pool 
+WHERE slot_pool.slots = ? AND slot_pool.pool = ?
+ LIMIT ? OFFSET ?]
+[parameters: (1, 'default_pool', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+WARNING  unusual_prefix_793ceaca2d97c9e41d58808ea8166718a60855cb_tutorial_taskflow_api_virtualenv:tutorial_taskflow_api_virtualenv.py:29 The tutorial_taskflow_api_virtualenv example DAG requires virtualenv, please install it.
+WARNING  unusual_prefix_ec378865a293772410c21d48c2ac2c9be5639437_example_local_kubernetes_executor:example_local_kubernetes_executor.py:39 Could not import DAGs in example_local_kubernetes_executor.py
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_local_kubernetes_executor.py", line 37, in <module>
+    from kubernetes.client import models as k8s
+ModuleNotFoundError: No module named 'kubernetes'
+WARNING  unusual_prefix_ec378865a293772410c21d48c2ac2c9be5639437_example_local_kubernetes_executor:example_local_kubernetes_executor.py:40 Install Kubernetes dependencies with: pip install apache-airflow[cncf.kubernetes]
+WARNING  unusual_prefix_a0ab0c73dc34ccb5ff0bb0c57e5da3a730cd533d_example_kubernetes_executor:example_kubernetes_executor.py:38 The example_kubernetes_executor example DAG requires the kubernetes provider. Please install it with: pip install apache-airflow[cncf.kubernetes]
+__________________________ test_download_creates_file __________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-0/test_download_creates_file0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca68d8050>
+
+    def test_download_creates_file(tmp_path, monkeypatch):
+        monkeypatch.setenv("S3_URL", "https://jsonplaceholder.typicode.com/users")
+        test_file = tmp_path / "data.json"
+        monkeypatch.setenv("LOCAL_PATH", str(test_file))
+    
+>       download_json()
+
+airflow/tests/test_download.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def download_json():
+        try:
+            S3_URL = os.getenv("S3_URL")
+            logging.info(f"Downloading data from {S3_URL}")
+    
+            response = requests.get(S3_URL)
+            response.raise_for_status()
+    
+>           with open(LOCAL_PATH, "w") as f:
+                 ^^^^^^^^^^^^^^^^^^^^^
+E           FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+
+airflow/dags/ingest_customer_data_dag.py:33: FileNotFoundError
+----------------------------- Captured stdout call -----------------------------
+[2025-06-14T21:47:40.640+0000] {ingest_customer_data_dag.py:28} INFO - Downloading data from https://jsonplaceholder.typicode.com/users
+[2025-06-14T21:47:40.730+0000] {ingest_customer_data_dag.py:38} ERROR - Failed to download file: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+------------------------------ Captured log call -------------------------------
+INFO     root:ingest_customer_data_dag.py:28 Downloading data from https://jsonplaceholder.typicode.com/users
+ERROR    root:ingest_customer_data_dag.py:38 Failed to download file: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+__________________________ test_download_missing_url ___________________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca68c0f10>
+
+    def test_download_missing_url(monkeypatch):
+        monkeypatch.delenv("S3_URL", raising=False)
+        monkeypatch.setenv("LOCAL_PATH", "/tmp/dummy.json")
+    
+        with pytest.raises(TypeError):
+>           download_json()
+
+airflow/tests/test_download.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+airflow/dags/ingest_customer_data_dag.py:30: in download_json
+    response = requests.get(S3_URL)
+               ^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/requests/api.py:73: in get
+    return request("get", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/requests/api.py:59: in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/requests/sessions.py:575: in request
+    prep = self.prepare_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/requests/sessions.py:484: in prepare_request
+    p.prepare(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/requests/models.py:367: in prepare
+    self.prepare_url(url, params)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <PreparedRequest [GET]>, url = 'None', params = OrderedDict()
+
+    def prepare_url(self, url, params):
+        """Prepares the given HTTP URL."""
+        #: Accept objects that have string representations.
+        #: We're unable to blindly call unicode/str functions
+        #: as this will include the bytestring indicator (b'')
+        #: on python 3.x.
+        #: https://github.com/psf/requests/pull/2238
+        if isinstance(url, bytes):
+            url = url.decode("utf8")
+        else:
+            url = str(url)
+    
+        # Remove leading whitespaces from url
+        url = url.lstrip()
+    
+        # Don't do any URL preparation for non-HTTP schemes like `mailto`,
+        # `data` etc to work around exceptions from `url_parse`, which
+        # handles RFC 3986 only.
+        if ":" in url and not url.lower().startswith("http"):
+            self.url = url
+            return
+    
+        # Support for unicode domain names and paths.
+        try:
+            scheme, auth, host, port, path, query, fragment = parse_url(url)
+        except LocationParseError as e:
+            raise InvalidURL(*e.args)
+    
+        if not scheme:
+>           raise MissingSchema(
+                f"Invalid URL {url!r}: No scheme supplied. "
+                f"Perhaps you meant https://{url}?"
+            )
+E           requests.exceptions.MissingSchema: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/requests/models.py:438: MissingSchema
+----------------------------- Captured stdout call -----------------------------
+[2025-06-14T21:47:40.995+0000] {ingest_customer_data_dag.py:28} INFO - Downloading data from None
+[2025-06-14T21:47:40.996+0000] {ingest_customer_data_dag.py:38} ERROR - Failed to download file: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+------------------------------ Captured log call -------------------------------
+INFO     root:ingest_customer_data_dag.py:28 Downloading data from None
+ERROR    root:ingest_customer_data_dag.py:38 Failed to download file: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+________________________ test_download_unwritable_path _________________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca67b87d0>
+
+    def test_download_unwritable_path(monkeypatch):
+        monkeypatch.setenv("S3_URL", "https://jsonplaceholder.typicode.com/users")
+        monkeypatch.setenv("LOCAL_PATH", "/root/forbidden.json")  # Simula falta de permisos
+    
+        with pytest.raises(PermissionError):
+>           download_json()
+
+airflow/tests/test_download.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def download_json():
+        try:
+            S3_URL = os.getenv("S3_URL")
+            logging.info(f"Downloading data from {S3_URL}")
+    
+            response = requests.get(S3_URL)
+            response.raise_for_status()
+    
+>           with open(LOCAL_PATH, "w") as f:
+                 ^^^^^^^^^^^^^^^^^^^^^
+E           FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+
+airflow/dags/ingest_customer_data_dag.py:33: FileNotFoundError
+----------------------------- Captured stdout call -----------------------------
+[2025-06-14T21:47:41.022+0000] {ingest_customer_data_dag.py:28} INFO - Downloading data from https://jsonplaceholder.typicode.com/users
+[2025-06-14T21:47:41.060+0000] {ingest_customer_data_dag.py:38} ERROR - Failed to download file: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+------------------------------ Captured log call -------------------------------
+INFO     root:ingest_customer_data_dag.py:28 Downloading data from https://jsonplaceholder.typicode.com/users
+ERROR    root:ingest_customer_data_dag.py:38 Failed to download file: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+__________________________ test_data_exists_in_bronze __________________________
+
+self = Engine(***postgres/qversity)
+fn = <bound method Pool.connect of <sqlalchemy.pool.impl.QueuePool object at 0x7f2ca67ba610>>
+connection = None
+
+    def _wrap_pool_connect(self, fn, connection):
+        dialect = self.dialect
+        try:
+>           return fn()
+                   ^^^^
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:3371: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:327: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:894: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:493: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/impl.py:145: in _do_get
+    with util.safe_reraise():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/langhelpers.py:70: in __exit__
+    compat.raise_(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py:211: in raise_
+    raise exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/impl.py:143: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:273: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:388: in __init__
+    self.__connect()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:690: in __connect
+    with util.safe_reraise():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/langhelpers.py:70: in __exit__
+    compat.raise_(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py:211: in raise_
+    raise exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:686: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/create.py:574: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py:598: in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=postgres user=qversity-admin *** dbname=qversity'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'qversity', 'host': 'postgres', 'password': 'qversity-admin', 'user': 'qversity-admin'}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres ***")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", ***)
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       psycopg2.OperationalError: could not translate host name "postgres" to address: Temporary failure in name resolution
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/psycopg2/__init__.py:122: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2ca711d3d0>
+
+    def test_data_exists_in_bronze(monkeypatch):
+        monkeypatch.setenv("DB_CONN_STR", "***postgres/qversity")
+        engine = create_engine(os.getenv("DB_CONN_STR"))
+    
+>       with engine.connect() as conn:
+             ^^^^^^^^^^^^^^^^
+
+airflow/tests/test_validate_data.py:11: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:3325: in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:96: in __init__
+    else engine.raw_connection()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:3404: in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:3374: in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:2208: in _handle_dbapi_exception_noconnection
+    util.raise_(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py:211: in raise_
+    raise exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py:3371: in _wrap_pool_connect
+    return fn()
+           ^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:327: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:894: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:493: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/impl.py:145: in _do_get
+    with util.safe_reraise():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/langhelpers.py:70: in __exit__
+    compat.raise_(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py:211: in raise_
+    raise exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/impl.py:143: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:273: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:388: in __init__
+    self.__connect()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:690: in __connect
+    with util.safe_reraise():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/langhelpers.py:70: in __exit__
+    compat.raise_(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/util/compat.py:211: in raise_
+    raise exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/pool/base.py:686: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/create.py:574: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py:598: in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=postgres user=qversity-admin *** dbname=qversity'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'qversity', 'host': 'postgres', 'password': 'qversity-admin', 'user': 'qversity-admin'}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres ***")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", ***)
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
+E       
+E       (Background on this error at: https://sqlalche.me/e/14/e3q8)
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/psycopg2/__init__.py:122: OperationalError
+=============================== warnings summary ===============================
+airflow/tests/test_dag_loading.py::test_dag_loaded
+  /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pydantic/_internal/_config.py:323: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+airflow/tests/test_dag_loading.py::test_dag_loaded
+  /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+  * 'orm_mode' has been renamed to 'from_attributes'
+    warnings.warn(message, UserWarning)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED airflow/tests/test_dag_loading.py::test_dag_loaded - AssertionError: Errores al importar los DAGs: {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py': 'Traceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlite3.OperationalError: no such table: slot_pool\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context\n    self.dialect.do_execute(\n  File "/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute\n    cursor.execute(statement, parameters)\nsqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool\n[SQL: SELECT slot_pool.id AS slot_pool_id, slot_pool.pool AS slot_pool_pool, slot_pool.slots AS slot_pool_slots, slot_pool.description AS slot_pool_description, slot_pool.include_deferred AS slot_pool_include_deferred \nFROM slot_pool \nWHERE slot_pool.slots = ? AND slot_pool.pool = ?\n LIMIT ? OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'}
+assert not {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'}
+ +  where {'/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/airflow/example_dags/example_subdag_operator.py... OFFSET ?]\n[parameters: (1, \'default_pool\', 1, 0)]\n(Background on this error at: https://sqlalche.me/e/14/e3q8)\n'} = <airflow.models.dagbag.DagBag object at 0x7f2ca834a8d0>.import_errors
+FAILED airflow/tests/test_dag_structure.py::test_dag_loaded - sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: dag
+[SQL: SELECT dag.dag_id, dag.root_dag_id, dag.is_paused, dag.is_subdag, dag.is_active, dag.last_parsed_time, dag.last_pickled, dag.last_expired, dag.scheduler_lock, dag.pickle_id, dag.fileloc, dag.processor_subdir, dag.owners, dag.description, dag.default_view, dag.schedule_interval, dag.timetable_description, dag.max_active_tasks, dag.max_active_runs, dag.has_task_concurrency_limits, dag.has_import_errors, dag.next_dagrun, dag.next_dagrun_data_interval_start, dag.next_dagrun_data_interval_end, dag.next_dagrun_create_after 
+FROM dag 
+WHERE dag.dag_id = ?]
+[parameters: ('ingest_customers_data_dag',)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+FAILED airflow/tests/test_download.py::test_download_creates_file - FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+FAILED airflow/tests/test_download.py::test_download_missing_url - requests.exceptions.MissingSchema: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+FAILED airflow/tests/test_download.py::test_download_unwritable_path - FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qversity-data-2025-Cali-JuanJoseAngaritaYela/qversity-data-2025-Cali-JuanJoseAngaritaYela/airflow/data/temp.json'
+FAILED airflow/tests/test_validate_data.py::test_data_exists_in_bronze - sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+=================== 6 failed, 1 passed, 2 warnings in 3.63s ====================
+Error: Process completed with exit code 1.

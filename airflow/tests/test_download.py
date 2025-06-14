@@ -2,11 +2,9 @@ import os
 import sys
 from pathlib import Path
 import pytest
+import builtins
 from requests.exceptions import HTTPError  # ✅ Necesario para el test de URL inválida
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-AIRFLOW_PATH = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(AIRFLOW_PATH))
 from dags.ingest_customer_data_dag import download_json
 from dotenv import load_dotenv
 
@@ -42,7 +40,12 @@ def test_download_missing_url(monkeypatch):
 
 def test_download_unwritable_path(monkeypatch):
     monkeypatch.setenv("S3_URL", "https://jsonplaceholder.typicode.com/users")
-    monkeypatch.setenv("LOCAL_PATH", "/root/forbidden.json")  # Simula falta de permisos
+    monkeypatch.setenv("LOCAL_PATH", "/any/path.json")
+
+    def raise_permission_error(*args, **kwargs):
+        raise PermissionError("Simulated permission error")
+
+    monkeypatch.setattr(builtins, "open", raise_permission_error)
 
     with pytest.raises(PermissionError):
         download_json()
