@@ -42,5 +42,8 @@ jobs:
           echo "LOCAL_PATH=$(pwd)/airflow/data/temp.json" >> $GITHUB_ENV
           echo "DB_CONN_STR=postgresql+psycopg2://qversity-admin:qversity-admin@localhost:5432/qversity" >> $GITHUB_ENV
 
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/airflow" >> $GITHUB_ENV
+
       - name: Run Pytest
         run: pytest airflow/tests
