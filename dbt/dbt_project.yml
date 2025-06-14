@@ -1,0 +1,36 @@
+name: 'qversity'
+version: '1.0.0'
+config-version: 2
+
+profile: 'qversity'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+analysis-paths: ["analysis"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  qversity:
+    # Bronze layer - raw data staging
+    bronze:
+      +materialized: table
+      +schema: bronze
+    # Silver layer - cleaned and transformed data
+    silver:
+      +materialized: table
+      +schema: silver
+    # Gold layer - business-ready data marts
+    gold:
+      +materialized: table
+      +schema: gold
+
+seeds:
+  qversity:
+    +schema: raw
