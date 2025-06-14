@@ -1,0 +1,79 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Airflow logs
+logs/
+airflow.db
+unittests.cfg
+
+# Python virtual env
+venv/
+env/
+ENV/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/
+.history/
+
+# macOS
+.DS_Store
+
+# dbt
+dbt_packages/
+dbt_modules/
+target/
+manifest.json
+*.log
+*.db
+profiles.yml
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.envrc
+
+# Docker
+*.pid
+*.sock
+*.tar
+**/__pycache__/
+**/*.pyc
+docker-compose.override.yml
+
+# PostgreSQL volumes (if manually persisted)
+pg_data/
+postgres_data/
+*.sql
+
+# Local data
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Coverage and testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# System files
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Output files
+*.out
+*.log
+*.tmp
+*.bak
+
+# JetBrains IDEs
+.idea/
