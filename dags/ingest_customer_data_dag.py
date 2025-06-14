@@ -39,17 +39,30 @@ def load_to_postgres():
     with open(LOCAL_PATH) as f:
         data = json.load(f)
 
+    df_raw_json=pd.DataFrame([{"raw": json.dumps(data)}])
+
+    df_raw_json["ingestion_timestamp"]= datetime.utcnow()
+
     df=pd.json_normalize(data)
 
-    df["ingestion_timestamp"]= datetime.utcnow()
+    #Serializes dicts or lists to avoid triggering errors in POSTGRE
+
+    for col in df.columns:
+        if df[col].apply(lambda x: isinstance(x, (dict, list))).any():
+            df[col] = df[col].apply(json.dumps)
+    df["ingestion_timestamp"] = datetime.utcnow()
+
 
     #Creates the SQLALChemy engine and connects to it
     engine= create_engine(DB_CONN_STR)
-    with engine.connect() as conn:
-        #Executes the command line
-        conn.execute("CREATE SCHEMA IF NOT EXISTS bronze_layer;")
+    with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
+        conn.execute("CREATE SCHEMA IF NOT EXISTS bronze;")
+    with engine.begin() as conn:
 
-        df.to_sql("customers_raw",con=conn, schema="bronze",if_exists="replace",index=False)
+        df_raw_json.to_sql("customers_raw_json", con=conn, schema="bronze", if_exists="replace", index=False)
+        print("Data loaded into bronze.customers_raw_json")
+        
+        df.to_sql("customers_raw", con=conn, schema="bronze", if_exists="replace", index=False)
         print("Data loaded into bronze.customers_raw")
 
 
