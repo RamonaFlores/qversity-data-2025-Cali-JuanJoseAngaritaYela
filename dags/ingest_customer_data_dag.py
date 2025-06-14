@@ -33,3 +33,21 @@ def download_json():
     
     print(f"File saved at:{LOCAL_PATH}")
 
+
+def load_to_postgres():
+    
+    with open(LOCAL_PATH) as f:
+        data = json.load(f)
+
+    df=pd.json_normalize(data)
+
+    df["ingestion_timestamp"]= datetime.utcnow()
+
+    #Creates the SQLALChemy engine and connects to it
+    engine= create_engine(DB_CONN_STR)
+    with engine.connect() as conn:
+        #Executes the command line
+        conn.execute("CREATE SCHEMA IF NOT EXISTS bronze_layer;")
+
+        df.to_sqls("customers_raw",con=conn, schema="bronze",if_exists="replace",index=False)
+        print("Data loaded into bronze.customers_raw")
