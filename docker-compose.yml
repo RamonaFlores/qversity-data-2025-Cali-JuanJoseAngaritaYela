@@ -21,12 +21,12 @@ services:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://qversity-admin:qversity-admin@postgres/qversity
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      _PIP_ADDITIONAL_REQUIREMENTS: dbt-core dbt-postgres pandas
+      _PIP_ADDITIONAL_REQUIREMENTS: dbt-core dbt-postgres pandas pytest
     volumes:
-      - .env:/opt/airflow/.env
-      - ./dags:/opt/airflow/dags
+      - ./airflow:/opt/airflow
       - ./logs:/opt/airflow/logs
       - ./data:/opt/airflow/data
+      - ./airflow/tests:/opt/airflow/tests
     ports:
       - "8080:8080"
     command: >

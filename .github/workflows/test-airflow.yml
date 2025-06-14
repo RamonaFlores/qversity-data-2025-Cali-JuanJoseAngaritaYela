@@ -1,0 +1,46 @@
+name: Run Airflow DAG Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: qversity-admin
+          POSTGRES_PASSWORD: qversity-admin
+          POSTGRES_DB: qversity
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U qversity-admin"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install apache-airflow==2.7.3 pandas dbt-core dbt-postgres pytest psycopg2-binary python-dotenv
+
+      - name: Set environment variables
+        run: |
+          echo "S3_URL=https://jsonplaceholder.typicode.com/users" >> $GITHUB_ENV
+          echo "LOCAL_PATH=$(pwd)/airflow/data/temp.json" >> $GITHUB_ENV
+          echo "DB_CONN_STR=postgresql+psycopg2://qversity-admin:qversity-admin@localhost:5432/qversity" >> $GITHUB_ENV
+
+      - name: Run Pytest
+        run: pytest airflow/tests
