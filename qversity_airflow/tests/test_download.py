@@ -5,7 +5,7 @@ import pytest
 import builtins
 from requests.exceptions import HTTPError  # ✅ Necesario para el test de URL inválida
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from dags.ingest_customer_data_dag import download_json
+from qversity_airflow.dags.ingest_customer_data_dag import download_json
 from dotenv import load_dotenv
 
 
