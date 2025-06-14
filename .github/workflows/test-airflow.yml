@@ -46,4 +46,4 @@ jobs:
         run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/airflow" >> $GITHUB_ENV
 
       - name: Run Pytest
-        run: pytest airflow/tests
+        run: pytest qversity_airflow/tests
