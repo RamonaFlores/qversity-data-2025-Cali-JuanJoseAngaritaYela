@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import logging
 from jsonschema import validate, ValidationError
-from dags.customer_schema import schema
+from customer_schema import schema
 from uuid import uuid4
 import hashlib
 
@@ -109,7 +109,7 @@ def load_to_postgres():
 
 # DAG config
 default_args = {
-    "owner": "airflow",
+    "owner": "juan_qversity",
     "retries": 2,
     "retry_delay": timedelta(seconds=30),
     "on_failure_callback": lambda context: logging.error(f"Task {context['task_instance_key_str']} failed"),

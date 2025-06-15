@@ -23,10 +23,11 @@ services:
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       _PIP_ADDITIONAL_REQUIREMENTS: dbt-core dbt-postgres pandas pytest
     volumes:
-      - ./airflow:/opt/airflow
+      - ./qversity_airflow:/opt/airflow
       - ./logs:/opt/airflow/logs
       - ./data:/opt/airflow/data
-      - ./airflow/tests:/opt/airflow/tests
+      - ./qversity_airflow/tests:/opt/airflow/tests
+      - ./.env:/opt/airflow/.env
     ports:
       - "8080:8080"
     command: >
