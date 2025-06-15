@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import logging
 from jsonschema import validate, ValidationError
-from customer_schema import schema
+from qversity_airflow.dags.customer_schema import schema
 from uuid import uuid4
 import hashlib
 
