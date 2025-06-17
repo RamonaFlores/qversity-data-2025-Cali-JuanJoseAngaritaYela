@@ -88,7 +88,7 @@ def load_to_postgres():
         logging.info(f"Valid records: {len(valid_records)}") 
         logging.info(f"Invalid records: {len(invalid_records)}")  
 
-        # 📦 Combina válidos e inválidos en un solo dataframe para rastreabilidad completa
+        # combine them all into one dataframe
         all_records_df = pd.DataFrame(valid_records + invalid_records)
 
         engine = create_engine(DB_CONN_STR)
