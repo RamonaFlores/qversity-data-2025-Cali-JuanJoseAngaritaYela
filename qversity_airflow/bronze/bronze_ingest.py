@@ -130,3 +130,103 @@ def set_last_hash(**_):
         #Calculates the MD5 hash of the whole record and saves it
         #as an Airflow Variable 
         Variable.set("bronze_last_file_hash", hashlib.md5(fp.read()).hexdigest())
+
+
+"""
+DAG: bronze_ingest_customers
+-----------------------------
+
+Daily ingestion DAG for raw customer data from a public S3 bucket into the Bronze layer.
+
+This DAG is responsible for:
+1. Checking whether the daily file has already been processed (via MD5 hash comparison).
+2. Downloading the JSON file if needed.
+3. Updating the hash registry for future DAG runs.
+4. Logging each step via the shared logger.
+
+It includes a TaskGroup (`download_group`) that encapsulates the entire extract phase.
+
+Schedule: Once per day.
+Catchup: Disabled.
+
+Tasks
+-----
+1. `needs_download` (ShortCircuitOperator):  
+   - Skips downstream tasks if the local file is identical to the one previously loaded.
+
+2. `download_json` (PythonOperator):  
+   - Downloads the raw JSON file from S3 and saves it to disk.
+
+3. `set_last_hash` (PythonOperator):  
+   - Calculates the MD5 hash of the file and stores it as a Variable in Airflow.
+
+Dependencies
+------------
+    needs_download >> download_json >> set_last_hash
+
+Tags
+----
+bronze, customers
+
+Default Args
+------------
+- owner: juan_qversity
+- retries: 2
+- retry_delay: 5 minutes
+- SLA: 30 minutes
+"""
+with DAG(
+    dag_id="bronze_ingest_customers",
+    start_date=datetime(2024,1,1),
+    schedule_interval="@daily",
+    catchup=False,
+    default_args={
+        "owner": "juan_qversity",
+        "retries": 2,
+        "retry_delay": timedelta(minutes=5),
+        "sla": timedelta(minutes=30),
+    },
+    tags=["bronze","customers"],
+) as dag:
+    # --------------------------------------------------------------
+    # TaskGroup: download_group
+    #
+    # This group handles the "extract" phase of the ETL pipeline.
+    #
+    # It includes:
+    # 1. `needs_download`: A ShortCircuitOperator that checks whether the
+    #    file has already been ingested by comparing MD5 hashes.
+    #    If the file is identical to the last ingested one, downstream tasks are skipped.
+    #
+    # 2. `download_json`: Downloads the raw JSON file from a public S3 bucket
+    #    and stores it locally using the configuration defined in CONFIG.
+    #
+    # 3. `set_last_hash`: Updates the stored hash in Airflow Variables
+    #    to reflect the latest ingested file.
+    #
+    # Workflow:
+    #     needs_download >> download_json >> set_last_hash
+    #
+    # Purpose:
+    #     Avoid reprocessing the same file and enforce idempotency
+    #     during daily ingestion runs.
+    # --------------------------------------------------------------
+    with TaskGroup("download_group") as download_group:
+        need_download=ShortCircuitOperator(
+            task_id="needs_download",
+            python_callable=file_already_loaded,
+        )
+
+        download_file=PythonOperator(
+            task_id="download_json",
+            python_callable=extract.download_json_to_local,
+            op_kwargs={"s3_url": CONFIG["s3_url"],"local_path": CONFIG["local_path"]}
+        )
+
+        set_hash=PythonOperator(
+            task_id="set_last_hash",
+            python_callable=set_last_hash,
+            trigger_rule=TriggerRule.All_SUCCESS,
+        )
+
+        need_download >> download_file >> set_hash
