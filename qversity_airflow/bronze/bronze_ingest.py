@@ -283,7 +283,51 @@ with DAG(
         )
 
         validate_records >> enrich_records >> ge_expect >> branch
-
-
+    # --------------------------------------------------------------
+    # TaskGroup: load_group
+    #
+    # This group handles the "load" phase of the ETL pipeline.
+    #
+    # Tasks:
+    # 1. `load_valid`: Receives the validated and enriched DataFrame from
+    #    the previous stage and writes it into the target database.
+    #    The connection string, schema, and table name are provided via CONFIG.
+    #
+    #    The DataFrame is pulled from XCom (produced by `enrich_records`)
+    #    using templated context. Make sure the data was properly serialized
+    #    for XCom (e.g., as JSON or filepath).
+    #
+    # 2. `log_invalid_only`: A lightweight fallback task that logs a message
+    #    if no valid data is available for loading. This ensures the DAG
+    #    completes gracefully even when GE validation fails.
+    #
+    # Workflow:
+    #     The downstream path is chosen dynamically by `branch_on_ge`.
+    #     Only one of these two tasks will be executed per DAG run.
+    #
+    # Purpose:
+    #     Finalizes the pipeline by either persisting the data or logging
+    #     a graceful no-op when there is nothing to load.
+    # --------------------------------------------------------------
     with TaskGroup("load_group") as load_group:
-        load_valid= PythonOperator()
+        load_valid= PythonOperator(
+            task_id="load_valid",
+            python_callable=load.load_dataframe,
+            op_kwargs={
+                # Pulls enriched DataFrame from XCom; must be serialized properly
+               "df": "{{ti.xcom_pull(task_ids='validation_group.enrich_records') }}",
+               "db_conn": CONFIG["db_conn"],
+               "schema": CONFIG["schema"],
+               "table": CONFIG["table"], 
+            },
+        )
+
+        log_invalid_only = PythonOperator(
+            task_id="log_invalid_only",
+            python_callable=utils.log.info,
+            op_args=["No valid records to load – logged only"],
+        )
+
+    #Dag Group dependencies :)
+    download_group >> validation_group >> load_group
+
