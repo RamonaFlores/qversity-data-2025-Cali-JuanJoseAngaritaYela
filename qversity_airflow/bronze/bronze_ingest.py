@@ -230,3 +230,60 @@ with DAG(
         )
 
         need_download >> download_file >> set_hash
+    # --------------------------------------------------------------
+    # TaskGroup: validation_group
+    #
+    # This group handles the "validate" phase of the ETL pipeline.
+    #
+    # Steps:
+    # 1. `validate_json`: Validates the raw records using JSON Schema.
+    #    It splits them into valid and invalid lists.
+    #
+    # 2. `enrich_records`: Takes both valid and invalid records and
+    #    enriches them with metadata such as UUID, hash, timestamps,
+    #    ingestion status, and pipeline run ID.
+    #
+    # 3. `great_expect`: Runs Great Expectations on the enriched DataFrame
+    #    to ensure required fields (e.g., uuid, raw) are not null.
+    #
+    # 4. `branch_on_ge`: Reads the GE result (True/False) and decides
+    #    which downstream path to follow:
+    #       - If valid → `load_valid`
+    #       - If invalid → `log_invalid_only`
+    #
+    # Purpose:
+    #     Ensure data quality using both schema validation and
+    #     expectations-based validation, and branch DAG logic accordingly.
+    #
+    # Dependencies:
+    #     validate_json >> enrich_records >> great_expect >> branch_on_ge
+    with TaskGroup("validation_group") as validation_group:
+        validate_records=PythonOperator(
+            task_id="validate_json",
+            python_callable=validate.split_and_validate,
+            op_kwargs={"local_path": CONFIG["local_path"],"schema":schema}
+        )
+
+        enrich_records=PythonOperator(
+            task_id="enrich_records",
+            python_callable=enrich.enrich_records,
+            op_kwargs={"local_path": CONFIG["local_path"]},
+        )
+        ge_expect = PythonOperator(
+            task_id="great_expect",
+            python_callable=validate.run_great_expectations,
+            #retrieves the df from enrich_records
+            op_kwargs={"df":"{{ ti.xcom_pull(task_ids='validation_group.enrich_records') }}"}
+
+        )
+        branch = BranchPythonOperator(
+            task_id="branch_on_ge",
+            python_callable=branch_on_validation,
+            op_kwargs={"passed": "{{ ti.xcom_pull(task_ids='validation_group.great_expect') }}"},
+        )
+
+        validate_records >> enrich_records >> ge_expect >> branch
+
+
+    with TaskGroup("load_group") as load_group:
+        load_valid= PythonOperator()
