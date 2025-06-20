@@ -18,15 +18,19 @@ services:
     depends_on:
       - postgres
     environment:
+      DB_CONN_STR: "postgresql+psycopg2://qversity-admin:qversity-admin@postgres:5432/qversity"
+      S3_URL: "https://qversity-raw-public-data.s3.amazonaws.com/mobile_customers_messy_dataset.json"
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      PYTHONPATH: /opt/airflow
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://qversity-admin:qversity-admin@postgres/qversity
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      _PIP_ADDITIONAL_REQUIREMENTS: dbt-core dbt-postgres pandas pytest
+      _PIP_ADDITIONAL_REQUIREMENTS: dbt-core dbt-postgres pandas pytest great_expectations
     volumes:
-      - ./qversity_airflow:/opt/airflow
+      - ./airflow:/opt/airflow
       - ./logs:/opt/airflow/logs
       - ./data:/opt/airflow/data
-      - ./qversity_airflow/tests:/opt/airflow/tests
+      - ./airflow/tests:/opt/airflow/tests
       - ./.env:/opt/airflow/.env
     ports:
       - "8080:8080"
