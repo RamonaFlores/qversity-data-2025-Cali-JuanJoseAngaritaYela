@@ -32,6 +32,7 @@ services:
       - ./data:/opt/airflow/data
       - ./airflow/tests:/opt/airflow/tests
       - ./.env:/opt/airflow/.env
+      - ./dbt:/opt/airflow/dbt 
     ports:
       - "8080:8080"
     command: >
@@ -46,6 +47,7 @@ services:
     volumes:
       - ./dbt:/dbt
       - ./data:/data
+      - ./dbt/profiles.yml:/root/.dbt/profiles.yml 
     working_dir: /dbt
     command: >
       bash -c "

@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: customers
+    description: Cleaned customer master data
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [customer_id]
+    columns:
+      - name: customer_id
+        tests: [not_null, unique]
+      - name: country
+        description: Clean country names
+      - name: plan_type
+        description: Normalized plan types
+        tests:
+          - accepted_values:
+              values: ['Prepago','Pospago','Control']
+
+  - name: customer_payments
+    description: Exploded payment history
+    columns:
+      - name: payment_id
+        tests: [unique]
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('customers')
+              field: customer_id
+
+  - name: customer_services
+    columns:
+      - name: service
+        tests:
+          - accepted_values:
+              values: ['voice','sms','international','roaming','data']
+
+  - name: devices
+    columns:
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('customers')
+              field: customer_id
+
+  - name: customer_billing
+    columns:
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('customers')
+              field: customer_id

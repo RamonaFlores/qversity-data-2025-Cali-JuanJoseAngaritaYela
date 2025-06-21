@@ -18,18 +18,11 @@ clean-targets:
 
 models:
   qversity:
-    # Bronze layer - raw data staging
-    bronze:
-      +materialized: table
-      +schema: bronze
-    # Silver layer - cleaned and transformed data
+    # Solo mantenemos silver por ahora
     silver:
       +materialized: table
       +schema: silver
-    # Gold layer - business-ready data marts
-    gold:
-      +materialized: table
-      +schema: gold
+
 
 seeds:
   qversity:
