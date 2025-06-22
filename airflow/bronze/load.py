@@ -2,17 +2,18 @@
 bronze.load
 ===========
 
-Carga incremental de la capa Bronze a PostgreSQL.
+Incremental load from the Bronze layer into PostgreSQL.
 
-Acepta el DataFrame en cualquiera de las formas:
+Accepts the DataFrame in any of the following formats:
 * pandas.DataFrame
-* str  (JSON orient="records")
+* str (JSON with orient="records")
 * list[dict]
 
-Garantiza:
-* autocreación de esquema,
-* inserción en lote,
-* conexión resiliente (pool_pre_ping=True).
+Ensures:
+* automatic schema creation,
+* batch insertion,
+* resilient connection (pool_pre_ping=True).
+
 """
 
 from __future__ import annotations
@@ -35,21 +36,22 @@ def load_dataframe(
     table: str,
 ) -> None:
     """
-    Persiste un DataFrame en PostgreSQL (modo *append*).
+        Persists a DataFrame into PostgreSQL (in *append* mode).
 
-    Parameters
-    ----------
-    df : DataFrame | str | list[dict]
-        Datos a insertar.  Si es ``str`` o ``list`` se convierte a DataFrame.
-    db_conn : str
-        Cadena de conexión SQLAlchemy (``postgresql+psycopg2://…``).
-    schema : str
-        Esquema destino (se crea si no existe).
-    table : str
-        Tabla destino.
+        Parameters
+        ----------
+        df : DataFrame | str | list[dict]
+            Data to insert. If given as ``str`` or ``list``, it will be converted to a DataFrame.
+        db_conn : str
+            SQLAlchemy connection string (e.g., ``postgresql+psycopg2://…``).
+        schema : str
+            Target schema (created if it does not exist).
+        table : str
+            Target table.
     """
 
-    # ── 1. Asegurar que `df` es un DataFrame ───────────────────────────────
+
+    # ── 1. Ensure `df` is a DataFrame ─────────────────────────────────────
     if isinstance(df, str):
         df = pd.read_json(df, orient="records")
     elif isinstance(df, list):
@@ -58,13 +60,13 @@ def load_dataframe(
     if not isinstance(df, pd.DataFrame):
         raise TypeError("`df` debe ser DataFrame, JSON string o list[dict]")
 
-    # ── 2. Conexión y autocreación de esquema ──────────────────────────────
+    # ── 2. Connect and auto-create schema if needed ───────────────────────
     engine = create_engine(db_conn, pool_pre_ping=True)
 
     with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
         conn.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{schema}";'))
 
-    # ── 3. Inserción transaccional en lote ─────────────────────────────────
+    # ── 3. Transactional batch insertion ──────────────────────────────────
     try:
         with engine.begin() as conn:
             df.to_sql(

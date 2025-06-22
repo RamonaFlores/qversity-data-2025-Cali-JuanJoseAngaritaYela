@@ -2,8 +2,8 @@
 bronze.enrich
 =============
 
-Enriquece registros válidos e inválidos con metadatos Bronze
-y devuelve un DataFrame para la fase de carga.
+Enriches both valid and invalid records with Bronze metadata
+and returns a DataFrame for the loading phase.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from bronze.utils import log
 
 # ─────────────────────────── helpers ────────────────────────────
 def _hash_record(record: Dict[str, Any]) -> str:
-    """SHA-256 estable (claves ordenadas) de un dict JSON."""
+    """Stable SHA-256 (ordered keys) of a JSON dict."""
     return hashlib.sha256(json.dumps(record, sort_keys=True).encode()).hexdigest()
 
 
@@ -31,7 +31,7 @@ def _build_row(
     error_msg: str | None,
     source_file: Path,
 ) -> Dict[str, Any]:
-    """Devuelve un dict con metadatos Bronze para un registro."""
+    """Returns a dict with Bronze metadata for a single record."""
     return {
         "raw": json.dumps(raw_obj, ensure_ascii=False),
         "record_validated": validated,
@@ -47,18 +47,18 @@ def _build_row(
     }
 
 
-# ─────────────────────── callable usado en la DAG ───────────────────────
+# ─────────────────────── callable used on the DAG───────────────────────
 def enrich_records(
     *,
-    ti,                 # inyectado por provide_context=True
+    ti,                 # inyected by provide_context=True
     local_path: str,
 ) -> pd.DataFrame:
     """
-    Une registros válidos + inválidos y devuelve un DataFrame
-    enriquecido para la capa Bronze.
+        Merges valid + invalid records and returns a DataFrame
+        enriched for the Bronze layer.
     """
 
-    # Recupera (valid_records, invalid_records) devuelto por validate_json
+    # gets (valid_records, invalid_records) devuelto por validate_json
     valid_records, invalid_records = ti.xcom_pull(
         key="return_value",
         task_ids="validation_group.validate_json",
@@ -67,16 +67,16 @@ def enrich_records(
     source_path = Path(local_path)
     rows: List[Dict[str, Any]] = []
 
-    # Válidos
+    # Valid
     for rec in valid_records:
         rows.append(_build_row(rec, True, None, source_path))
 
-    # Inválidos → tuples (registro, error_msg)
+    # Invalid → touples (record, error_msg)
     for rec, err in invalid_records:
         rows.append(_build_row(rec, False, err, source_path))
 
     df = pd.DataFrame(rows)
     log.info("[enrich] Generated DataFrame with %s rows", len(df))
 
-    # ✅ Devuelve JSON registros → XCom soportado y compacto
+    #  Returns JSON records
     return df.to_json(orient="records")

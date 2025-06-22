@@ -2,7 +2,7 @@
 
 with src as (
 
-    -- 1️⃣ Tomamos solo filas válidas (record_validated = true)  
+    -- 1 Select only valid rows (record_validated = true)
     select
         raw::jsonb                                    as raw_json,
         ingestion_timestamp
@@ -11,19 +11,19 @@ with src as (
 
 ), filtered as (
 
-    -- ✅ 1.1 Validamos que el JSON tenga los campos requeridos y que sean del tipo esperado
+    --  1.1 Validate that JSON contains required fields and correct types
     select *
     from src
     where
-        jsonb_typeof(raw_json) = 'object'
-        and (raw_json ? 'customer_id')
-        and (raw_json ? 'age')
-        and jsonb_typeof(raw_json -> 'age') in ('string', 'number')
-        and (raw_json ->> 'customer_id') ~ '^\d+$'
+        jsonb_typeof(raw_json) = 'object'                            -- must be a JSON object
+        and (raw_json ? 'customer_id')                               -- must contain customer_id
+        and (raw_json ? 'age')                                       -- must contain age
+        and jsonb_typeof(raw_json -> 'age') in ('string', 'number') -- age must be a number or numeric string
+        and (raw_json ->> 'customer_id') ~ '^\d+$'                   -- customer_id must be numeric
 
 ), flattened as (
 
-    -- 2️⃣ Aplastar los campos JSON de primer nivel -----------------------
+    -- 2 Flatten top-level JSON fields -----------------------------------
     select
         (raw_json ->> 'customer_id')::int                          as customer_id,
         initcap(raw_json ->> 'first_name')                         as first_name,
@@ -36,7 +36,7 @@ with src as (
         raw_json ->> 'operator'                                    as operator_raw,
         raw_json ->> 'plan_type'                                   as plan_type_raw,
 
-        -- 🛠️ Manejo robusto de fechas con múltiples formatos
+        -- Robust handling of date formats -----------------------------
         case
             when (raw_json ->> 'registration_date') ~ '^\d{4}-\d{2}-\d{2}$' then
                 (raw_json ->> 'registration_date')::date
@@ -54,7 +54,7 @@ with src as (
 
 ), standardized as (
 
-    -- 3️⃣ Normalizar con los diccionarios seed ---------------------------
+    -- 3 Normalize values using seed mapping dictionaries ----------------
     select
         f.customer_id,
         f.first_name,
@@ -83,4 +83,5 @@ with src as (
 
 )
 
+-- Final SELECT: returns cleaned and standardized customer data
 select * from standardized

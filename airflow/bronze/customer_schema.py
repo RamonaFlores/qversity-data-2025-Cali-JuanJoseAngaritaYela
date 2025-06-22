@@ -1,46 +1,50 @@
 schema = {
     "type": "object",
     "properties": {
-        "customer_id": {"type": "integer"},  # requerido
-        "first_name": {"type": "string"},    # requerido
-        "last_name": {"type": "string"},     # requerido
+        "customer_id": {"type": "integer"},  # required - unique customer identifier
+        "first_name": {"type": "string"},    # required - customer's first name
+        "last_name": {"type": "string"},     # required - customer's last name
         "email": {
             "type": "string",
-            "pattern": ".*@.*\\..*"           # permite emails básicos como "x@y.z"
-        },  # requerido
+            "pattern": ".*@.*\\..*"           # allows basic email format like "x@y.z"
+        },  # required - must follow basic email pattern
         "phone_number": {
             "type": "string",
-            "minLength": 7                   # para evitar vacíos o ruidos cortos
-        },  # requerido
-        "age": {"type": "integer", "minimum": 0, "maximum": 120},  # requerido
-        "country": {"type": "string"},       # requerido
-        "city": {"type": "string"},          # requerido
-        "operator": {"type": "string"},      # requerido
-        "plan_type": {"type": "string"},     # requerido
-        "monthly_data_gb": {"type": "number"},  # requerido
+            "minLength": 7                   # avoid empty or very short noise
+        },  # required - minimum 7 characters
+        "age": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 120
+        },  # required - must be a valid human age
+        "country": {"type": "string"},       # required - country of residence
+        "city": {"type": "string"},          # required - city of residence
+        "operator": {"type": "string"},      # required - mobile service operator
+        "plan_type": {"type": "string"},     # required - plan type (e.g. prepaid/postpaid)
+        "monthly_data_gb": {"type": "number"},  # required - monthly data allowance in GB
         "monthly_bill_usd": {
-            "type": ["number", "string", "null"]  # permite "unknown"
+            "type": ["number", "string", "null"]  # can be "unknown", numeric or null
         },
         "registration_date": {
             "type": "string",
-            "pattern": ".*"  # tolera date o timestamp
-        },  # requerido
-        "status": {"type": "string"},        # requerido
-        "device_brand": {"type": ["string", "null"]},
-        "device_model": {"type": ["string", "null"]},
+            "pattern": ".*"  # allows date or timestamp formats
+        },  # required - date of customer registration
+        "status": {"type": "string"},        # required - account status (flexible values)
+        "device_brand": {"type": ["string", "null"]},  # optional - mobile device brand
+        "device_model": {"type": ["string", "null"]},  # optional - mobile device model
         "contracted_services": {
             "type": "array",
             "items": {"type": "string"}
-        },
-        "record_uuid": {"type": "string"},  # requerido
+        },  # optional - list of contracted services (e.g. internet, TV)
+        "record_uuid": {"type": "string"},  # required - unique identifier for the record
         "last_payment_date": {
-            "type": ["string", "null"],     # puede ser nulo en algunos casos
+            "type": ["string", "null"],     # may be null for inactive or new accounts
             "pattern": ".*"
-        },  # requerido
-        "credit_limit": {"type": "number"},  # requerido
-        "data_usage_current_month": {"type": "number"},  # requerido
-        "latitude": {"type": "number"},      # requerido
-        "longitude": {"type": "number"},     # requerido
+        },  # required - last payment date
+        "credit_limit": {"type": "number"},  # required - assigned credit limit in USD
+        "data_usage_current_month": {"type": "number"},  # required - usage in GB
+        "latitude": {"type": "number"},      # required - geolocation: latitude
+        "longitude": {"type": "number"},     # required - geolocation: longitude
         "payment_history": {
             "anyOf": [
                 {"type": "null"},
@@ -49,20 +53,20 @@ schema = {
                     "items": {
                         "type": "object",
                         "properties": {
-                            "date": {"type": "string"},
-                            "status": {"type": "string"},
-                            "amount": {"type": ["number", "string"]}
+                            "date": {"type": "string"},      # date of payment
+                            "status": {"type": "string"},    # e.g. "paid", "missed"
+                            "amount": {"type": ["number", "string"]}  # paid amount
                         },
                         "required": ["date", "status", "amount"]
                     }
                 }
             ]
-        },
+        },  # optional - historical list of payments
         "credit_score": {
             "type": "integer",
             "minimum": 0,
             "maximum": 1000
-        }  # requerido
+        }  # required - score from credit bureau (0–1000)
     },
     "required": [
         "customer_id",

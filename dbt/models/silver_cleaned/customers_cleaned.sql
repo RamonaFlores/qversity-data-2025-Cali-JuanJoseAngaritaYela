@@ -2,12 +2,13 @@
 
 with base as (
 
+    -- Load base customer dataset
     select *
     from {{ ref('customers') }}
 
 ), deduplicated as (
 
-    -- 1️⃣ Elimina duplicados por e-mail *y* por customer_id
+    -- 1 Deduplicate by customer_id and email (case- and whitespace-insensitive)
     select *
     from (
         select *,
@@ -21,10 +22,11 @@ with base as (
 
 ), limpiado as (
 
+    -- Clean, normalize, and standardize customer attributes
     select
         customer_id,
 
-        -- Limpieza de first_name
+        --  Standardize first names with fuzzy variants
         case
             when lower(first_name) in ('lau', 'laur', 'laur3', 'laur8', 'laura', 'laura1', 'laura2', 'laura5', 'laura7') then 'Laura'
             when lower(first_name) in ('an', 'ana', 'ana 1', 'ana1', 'ana3', 'ana6', 'ana7', 'ana9') then 'Ana'
@@ -39,7 +41,7 @@ with base as (
             else initcap(trim(first_name))
         end                                                         as first_name,
 
-        -- Limpieza de last_name
+        --  Standardize last names with fuzzy variants
         case
             when lower(last_name) in ('rodrigue', 'rodríguez', 'rodriguez', 'rodrígue') then 'Rodríguez'
             when lower(last_name) in ('fernandez', 'fernández', 'fernan', 'fernande', 'fernán') then 'Fernández'
@@ -50,46 +52,34 @@ with base as (
             else initcap(trim(last_name))
         end                                                         as last_name,
 
+        --  Email validation using regex
         case
             when email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
             then lower(trim(email))
         end                                                         as email,
 
+        --  Phone number must be digits-only and between 7 to 15 characters
         case
             when regexp_replace(phone_number, '\D', '', 'g') ~ '^\d{7,15}$'
             then phone_number
         end                                                         as phone_number,
 
+        --  Age must be in realistic range
         case
             when age between 0 and 120 then age
         end                                                         as age,
 
-        -- Limpieza completa de country
+        --  Standardize country names
         case
-            when lower(trim(country)) in (
-                'colombia', 'col', 'colomia', 'co'
-            ) then 'Colombia'
-
-            when lower(trim(country)) in (
-                'mexico', 'méxico', 'mex', 'mejico', 'mx', 'mexco'
-            ) then 'México'
-
-            when lower(trim(country)) in (
-                'perú', 'peru', 'per', 'pe', 'pru'
-            ) then 'Perú'
-
-            when lower(trim(country)) in (
-                'argentina', 'argentin', 'arg', 'ar'
-            ) then 'Argentina'
-
-            when lower(trim(country)) in (
-                'chile', 'chi', 'chl', 'chle'
-            ) then 'Chile'
-
+            when lower(trim(country)) in ('colombia', 'col', 'colomia', 'co') then 'Colombia'
+            when lower(trim(country)) in ('mexico', 'méxico', 'mex', 'mejico', 'mx', 'mexco') then 'México'
+            when lower(trim(country)) in ('perú', 'peru', 'per', 'pe', 'pru') then 'Perú'
+            when lower(trim(country)) in ('argentina', 'argentin', 'arg', 'ar') then 'Argentina'
+            when lower(trim(country)) in ('chile', 'chi', 'chl', 'chle') then 'Chile'
             else initcap(trim(country))
         end                                                         as country,
 
-        -- Limpieza de city
+        --  Normalize city names with accented variations and typos
         initcap(trim(
             case
                 when lower(city) in ('bogotá', 'bogota') then 'Bogotá'
@@ -112,10 +102,10 @@ with base as (
             end
         ))                                                         as city,
 
-        -- Limpieza de operator
+        --  Normalize operator values to known providers
         lower(trim(
             case
-                when lower(operator) in ('claro', 'clar', 'cla ') then 'claro'
+                when lower(operator) in ('claro', 'clar', 'cla') then 'claro'
                 when lower(operator) in ('movistar', 'movstr','movistr','mov') then 'movistar'
                 when lower(operator) in ('tigo', 'tgo','tig') then 'tigo'
                 when lower(operator) in ('wom', 'won','w0m','WOM','W0M') then 'wom'
@@ -123,6 +113,7 @@ with base as (
             end
         ))                                                         as operator,
 
+        --  Plan type normalization with fallbacks
         case
             when lower(trim(plan_type)) in ('ctrl', 'control') then 'control'
             when lower(trim(plan_type)) in ('pre', 'prepago') then 'prepago'
@@ -130,28 +121,31 @@ with base as (
             else 'undefined'
         end                                    as plan_type,
 
+        --  Registration date must be valid
         case
             when registration_date between '2000-01-01' and current_date
             then registration_date
         end                                                         as registration_date,
 
+        --  Normalize status values to standard categories
         case
              when lower(trim(status)) in ('active', 'activo', 'válido') then 'active'
              when lower(trim(status)) in ('inactive', 'inactivo', 'invalid') then 'inactive'
              when lower(trim(status)) in ('suspended', 'suspendido') then 'suspended'
              else 'undefined'
         end                                                             as status,
-                                        
 
+        --  Credit score within allowed range
         case
             when credit_score between 0 and 1000 then credit_score
         end                                                         as credit_score,
 
+        --  Timestamp from ingestion process
         ingestion_timestamp
     from deduplicated
 )
 
--- 2️⃣ Filtra filas inválidas: edad nula o email nulo rompen tests
+-- 2 Final filter: only include rows with valid age, email, and customer_id
 select *
 from limpiado
 where age is not null
