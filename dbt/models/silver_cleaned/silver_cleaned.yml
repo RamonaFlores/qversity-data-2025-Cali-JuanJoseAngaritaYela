@@ -1,0 +1,150 @@
+version: 2
+
+models:
+  - name: customers_cleaned
+    description: >
+      Tabla limpia de clientes. Contiene únicamente registros válidos con edades, fechas y scores en rangos aceptables.
+    columns:
+      - name: customer_id
+        description: ID único del cliente.
+        tests: [not_null, unique]
+      - name: first_name
+        description: Primer nombre del cliente.
+      - name: last_name
+        description: Apellido del cliente.
+      - name: email
+        description: Correo electrónico del cliente.
+      - name: phone_number
+        description: Teléfono del cliente.
+      - name: age
+        description: Edad del cliente entre 0 y 120 años.
+        tests: [not_null]
+      - name: country
+        description: País de residencia del cliente.
+      - name: city
+        description: Ciudad de residencia.
+      - name: operator
+        description: Compañía operadora.
+      - name: plan_type
+        description: Tipo de plan móvil contratado.
+      - name: registration_date
+        description: Fecha de registro del cliente (no debe estar en el futuro).
+      - name: status
+        description: Estado del cliente (activo, suspendido, etc.).
+      - name: credit_score
+        description: Puntuación de crédito entre 0 y 1000.
+      - name: ingestion_timestamp
+        description: Timestamp de ingestión del dato.
+
+  - name: customer_billing_cleaned
+    description: >
+      Tabla de facturación con valores monetarios válidos y sin registros duplicados.
+    columns:
+      - name: billing_id
+        description: ID único generado para el evento de facturación.
+        tests: [not_null, unique]
+      - name: customer_id
+        description: ID del cliente que debe existir en la tabla de clientes.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('customers_cleaned')
+              field: customer_id
+      - name: last_payment_date
+        description: Fecha válida del último pago recibido.
+      - name: monthly_bill_usd
+        description: Valor mensual facturado en dólares, no negativo y menor a 100000.
+      - name: credit_limit
+        description: Límite de crédito del cliente.
+      - name: data_usage_current_month
+        description: Cantidad de datos usados este mes.
+      - name: monthly_data_gb
+        description: Plan mensual contratado en GB.
+      - name: ingestion_timestamp
+        description: Timestamp de ingestión del dato.
+
+  - name: customer_location_cleaned
+    description: >
+      Tabla que representa la ubicación del cliente, deduplicada y con coordenadas válidas.
+    columns:
+      - name: location_id
+        description: ID único generado por coordenadas y cliente.
+        tests: [not_null, unique]
+      - name: customer_id
+        description: Cliente al que pertenece la localización.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('customers_cleaned')
+              field: customer_id
+      - name: latitude
+        description: Latitud válida entre -90 y 90 grados.
+      - name: longitude
+        description: Longitud válida entre -180 y 180 grados.
+      - name: ingestion_timestamp
+        description: Timestamp de ingestión del dato.
+
+  - name: customer_payment_cleaned
+    description: >
+      Tabla limpia de pagos. Sólo contiene registros válidos y relacionados con clientes existentes.
+    columns:
+      - name: payment_id
+        description: ID único de pago.
+        tests: [not_null, unique]
+      - name: customer_id
+        description: Cliente que realizó el pago.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('customers_cleaned')
+              field: customer_id
+      - name: payment_date
+        description: Fecha del pago.
+      - name: amount
+        description: Valor del pago, positivo y menor a 10 millones.
+      - name: method
+        description: "Método de pago válido: card, cash, transfer, qr, bank."
+      - name: status
+        description: "Estado del pago: paid, pending o failed."
+      - name: ingestion_timestamp
+        description: Timestamp de ingestión del dato.
+
+  - name: customer_services_cleaned
+    description: >
+      Tabla limpia de servicios activos por cliente. Se asegura integridad referencial y tipos de servicio válidos.
+    columns:
+      - name: service_id
+        description: ID único de contratación del servicio.
+        tests: [not_null, unique]
+      - name: customer_id
+        description: Cliente que tiene contratado el servicio.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('customers_cleaned')
+              field: customer_id
+      - name: service_type
+        description: "Tipo de servicio válido: data, voice, sms, tv, bundle."
+      - name: ingestion_timestamp
+        description: Timestamp de ingestión del dato.
+
+  - name: devices_cleaned
+    description: >
+      Tabla con dispositivos asignados a clientes. El modelo garantiza tipos de dispositivos consistentes y sin duplicados.
+    columns:
+      - name: device_id
+        description: ID único generado con marca, modelo y cliente.
+        tests: [not_null, unique]
+      - name: customer_id
+        description: Cliente al que se le asignó el dispositivo.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('customers_cleaned')
+              field: customer_id
+      - name: brand
+        description: Marca del dispositivo en formato capitalizado.
+      - name: model
+        description: Modelo del dispositivo en mayúsculas.
+      - name: ingestion_timestamp
+        description: Timestamp de ingestión del dato.

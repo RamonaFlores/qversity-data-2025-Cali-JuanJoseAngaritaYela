@@ -1,6 +1,7 @@
-version: '3.8'
+version: "3.8"
 
 services:
+# ─────────────────────────  Base de datos  ────────────────────────── #
   postgres:
     image: postgres:15
     environment:
@@ -11,28 +12,38 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:                       # evita que Airflow arranque antes de tiempo
+      test: ["CMD-SHELL", "pg_isready -U qversity-admin -d qversity"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
+# ────────────────────────────  Airflow  ──────────────────────────── #
   airflow:
-    image: apache/airflow:2.7.3-python3.11
+    build:                            # usamos Dockerfile.airflow (extiende la oficial)
+      context: .
+      dockerfile: Dockerfile.airflow
     restart: on-failure
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy    # espera a que Postgres esté listo
     environment:
-      DB_CONN_STR: "postgresql+psycopg2://qversity-admin:qversity-admin@postgres:5432/qversity"
-      S3_URL: "https://qversity-raw-public-data.s3.amazonaws.com/mobile_customers_messy_dataset.json"
+      DB_CONN_STR: postgresql+psycopg2://qversity-admin:qversity-admin@postgres:5432/qversity
+      S3_URL: https://qversity-raw-public-data.s3.amazonaws.com/mobile_customers_messy_dataset.json
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
       PYTHONPATH: /opt/airflow
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://qversity-admin:qversity-admin@postgres/qversity
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      _PIP_ADDITIONAL_REQUIREMENTS: dbt-core dbt-postgres pandas pytest great_expectations
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      _PIP_ADDITIONAL_REQUIREMENTS: >-
+        dbt-core dbt-postgres pandas pytest great_expectations
     volumes:
-      - ./airflow:/opt/airflow
+      - ./airflow:/opt/airflow                # DAGs, plugins, utils
       - ./logs:/opt/airflow/logs
       - ./data:/opt/airflow/data
       - ./airflow/tests:/opt/airflow/tests
       - ./.env:/opt/airflow/.env
-      - ./dbt:/opt/airflow/dbt 
+      - ./dbt:/opt/airflow/dbt                # proyecto dbt
     ports:
       - "8080:8080"
     command: >
@@ -42,22 +53,24 @@ services:
       airflow webserver & airflow scheduler
       "
 
+
+# ──────────────────────  Contenedor de dbt “sandbox”  ───────────────────── #
   dbt:
     image: python:3.11
-    volumes:
-      - ./dbt:/dbt
-      - ./data:/data
-      - ./dbt/profiles.yml:/root/.dbt/profiles.yml 
-    working_dir: /dbt
-    command: >
-      bash -c "
-      pip install dbt-core dbt-postgres &&
-      sleep infinity
-      "
     depends_on:
       - postgres
     environment:
-      DBT_PROFILES_DIR: /dbt
+      DBT_PROFILES_DIR: /dbt              # profile se monta aquí
+    working_dir: /dbt
+    volumes:
+      - ./dbt:/dbt                        # proyecto
+      - ./data:/data
+      - ./dbt/profiles.yml:/root/.dbt/profiles.yml
+    command: >
+      bash -c "
+        pip install dbt-core dbt-postgres &&
+        sleep infinity                    # queda vivo para que podamos 'exec'
+      "
 
 volumes:
   postgres_data:

@@ -5,25 +5,29 @@ config-version: 2
 profile: 'qversity'
 
 model-paths: ["models"]
-seed-paths: ["seeds"]
-test-paths: ["tests"]
+seed-paths:  ["seeds"]
+test-paths:  ["tests"]
 macro-paths: ["macros"]
 analysis-paths: ["analysis"]
 snapshot-paths: ["snapshots"]
 
 target-path: "target"
-clean-targets:
-  - "target"
-  - "dbt_packages"
+clean-targets: ["target", "dbt_packages"]
+
+on-run-start:                                # 👈  Se ejecuta 1 sola vez por run
+  - "create schema if not exists bronze"
+  - "create schema if not exists silver"
+  - "create schema if not exists silver_cleaned"
+  - "create schema if not exists raw"        # (por si tus seeds van ahí)
 
 models:
   qversity:
-    # Solo mantenemos silver por ahora
     silver:
       +materialized: table
-      +schema: silver
-
-
+      +schema: silver        # ← Todos los modelos dentro de models/silver/*
+    silver_cleaned:               # 👈 ESTA FALTABA
+      +materialized: table
+      +schema: silver_cleaned  
 seeds:
   qversity:
     +schema: raw

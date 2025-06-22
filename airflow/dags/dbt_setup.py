@@ -31,10 +31,9 @@ with DAG(
         task_id='dbt_seed',
         bash_command='cd /opt/airflow/dbt && dbt seed',
     )
-
     dbt_debug = BashOperator(
         task_id='dbt_debug',
         bash_command='cd /opt/airflow/dbt && dbt debug',
     )
 
-    dbt_clean >> dbt_deps >> dbt_seed >> dbt_debug
+    dbt_clean >> dbt_deps >> dbt_seed >>  dbt_debug
