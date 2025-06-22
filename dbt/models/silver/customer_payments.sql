@@ -6,6 +6,7 @@ with src as (
         ingestion_timestamp
     from {{ source('bronze','customers_raw_json') }}
     where record_validated
+      and jsonb_typeof(raw::jsonb -> 'payment_history') = 'array'
 ), exploded as (
     select
         (raw_json ->> 'customer_id')::int                     as customer_id,

@@ -2,46 +2,59 @@
 
 with src as (
 
-    -- 1️⃣   Tomamos solo filas válidas (record_validated = true)  
+    -- 1️⃣ Tomamos solo filas válidas (record_validated = true)  
     select
-        -- el texto JSON crudo
         raw::jsonb                                    as raw_json,
         ingestion_timestamp
     from {{ source('bronze','customers_raw_json') }}
     where record_validated
 
+), filtered as (
+
+    -- ✅ 1.1 Validamos que el JSON tenga los campos requeridos y que sean del tipo esperado
+    select *
+    from src
+    where
+        jsonb_typeof(raw_json) = 'object'
+        and (raw_json ? 'customer_id')
+        and (raw_json ? 'age')
+        and jsonb_typeof(raw_json -> 'age') in ('string', 'number')
+        and (raw_json ->> 'customer_id') ~ '^\d+$'
+
 ), flattened as (
 
-    -- 2️⃣   Aplastar los campos JSON de primer nivel -----------------------
+    -- 2️⃣ Aplastar los campos JSON de primer nivel -----------------------
     select
-        (raw_json ->> 'customer_id')::int             as customer_id,
-        initcap(raw_json ->> 'first_name')            as first_name,
-        initcap(raw_json ->> 'last_name')             as last_name,
-        lower(raw_json ->> 'email')                   as email,
-        raw_json ->> 'phone_number'                   as phone_number,
-        cast(nullif(raw_json ->> 'age', '') as float)::int                     as age,
-        raw_json ->> 'country'                        as country_raw,
-        raw_json ->> 'city'                           as city_raw,
-        raw_json ->> 'operator'                       as operator_raw,
-        raw_json ->> 'plan_type'                      as plan_type_raw,
+        (raw_json ->> 'customer_id')::int                          as customer_id,
+        initcap(raw_json ->> 'first_name')                         as first_name,
+        initcap(raw_json ->> 'last_name')                          as last_name,
+        lower(raw_json ->> 'email')                                as email,
+        raw_json ->> 'phone_number'                                as phone_number,
+        cast(nullif(raw_json ->> 'age', '') as float)::int         as age,
+        raw_json ->> 'country'                                     as country_raw,
+        raw_json ->> 'city'                                        as city_raw,
+        raw_json ->> 'operator'                                    as operator_raw,
+        raw_json ->> 'plan_type'                                   as plan_type_raw,
 
-        -- 🛠️ Manejo robusto de fechas en dos formatos distintos
+        -- 🛠️ Manejo robusto de fechas con múltiples formatos
         case
-            when length(raw_json ->> 'registration_date') = 10 then
-                (raw_json ->> 'registration_date')::date  -- formato YYYY-MM-DD
-            when length(raw_json ->> 'registration_date') = 8 then
-                to_date(raw_json ->> 'registration_date', 'DD-MM-YY') -- formato DD-MM-YY
+            when (raw_json ->> 'registration_date') ~ '^\d{4}-\d{2}-\d{2}$' then
+                (raw_json ->> 'registration_date')::date
+            when (raw_json ->> 'registration_date') ~ '^\d{2}-\d{2}-\d{2}$' then
+                to_date(raw_json ->> 'registration_date', 'DD-MM-YY')
+            when (raw_json ->> 'registration_date') ~ '^\d{2}/\d{2}/\d{4}$' then
+                to_date(raw_json ->> 'registration_date', 'DD/MM/YYYY')
             else null
-        end as registration_date,
+        end                                                      as registration_date,
 
-        raw_json ->> 'status'                         as status_raw,
-        cast(nullif(raw_json ->> 'credit_score', '') as float)::int           as credit_score,
+        raw_json ->> 'status'                                      as status_raw,
+        cast(nullif(raw_json ->> 'credit_score', '') as float)::int as credit_score,
         ingestion_timestamp
-    from src
+    from filtered
 
 ), standardized as (
 
-    -- 3️⃣   Normalizar con los diccionarios seed ---------------------------
+    -- 3️⃣ Normalizar con los diccionarios seed ---------------------------
     select
         f.customer_id,
         f.first_name,

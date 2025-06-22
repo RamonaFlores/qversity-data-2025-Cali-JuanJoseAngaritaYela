@@ -27,7 +27,10 @@ models:
       +schema: silver        # ← Todos los modelos dentro de models/silver/*
     silver_cleaned:               # 👈 ESTA FALTABA
       +materialized: table
-      +schema: silver_cleaned  
+      +schema: silver_cleaned 
+    gold:                             
+      +materialized: table
+      +schema: gold 
 seeds:
   qversity:
     +schema: raw

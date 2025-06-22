@@ -26,27 +26,27 @@ with base as (
 
         -- Limpieza de first_name
         case
-            when lower(first_name) in ('lau', 'laur') then 'Laura'
-            when lower(first_name) in ('an') then 'Ana'
-            when lower(first_name) in ('carme', 'carm', 'carmen') then 'Carmen'
-            when lower(first_name) in ('pedr', 'pedro') then 'Pedro'
-            when lower(first_name) in ('mig', 'miguel') then 'Miguel'
-            when lower(first_name) in ('mara', 'maria', 'maría', 'mari 3') then 'María'
-            when lower(first_name) in ('sofi', 'sofia') then 'Sofía'
-            when lower(first_name) in ('jua', 'juan', 'jun') then 'Juan'
-            when lower(first_name) in ('carls', 'carlos') then 'Carlos'
-            when lower(first_name) in ('lui', 'luis') then 'Luis'
+            when lower(first_name) in ('lau', 'laur', 'laur3', 'laur8', 'laura', 'laura1', 'laura2', 'laura5', 'laura7') then 'Laura'
+            when lower(first_name) in ('an', 'ana', 'ana 1', 'ana1', 'ana3', 'ana6', 'ana7', 'ana9') then 'Ana'
+            when lower(first_name) in ('carme', 'carm', 'carmen', 'carme5', 'carmen2', 'carmen4', 'carmen6', 'carmen8', 'carmen9') then 'Carmen'
+            when lower(first_name) in ('pedr', 'pedro', 'pedro3', 'pedro4', 'pedr4') then 'Pedro'
+            when lower(first_name) in ('mig', 'migue', 'miguel', 'miguel2', 'miguel3', 'miguel4', 'miguel5', 'miguel6', 'miguel9', 'mig5') then 'Miguel'
+            when lower(first_name) in ('mara', 'maria', 'maría', 'mari', 'mari 3', 'mari5', 'mara5', 'mara8', 'mara9') then 'María'
+            when lower(first_name) in ('sofi', 'sofia', 'sofia1', 'sofia4', 'sofia8', 'sofia9', 'sofi3', 'sof') then 'Sofía'
+            when lower(first_name) in ('jua', 'juan', 'jun', 'jua1', 'jua2', 'jua4', 'jua8', 'juan4', 'juan6', 'juan7', 'juan8', 'juan 6') then 'Juan'
+            when lower(first_name) in ('carls', 'carlos', 'carlo', 'carlo1', 'carlo2', 'carlo3', 'carlo7', 'carlos5', 'carlos6', 'carls5', 'carls9') then 'Carlos'
+            when lower(first_name) in ('lu', 'lui', 'luis', 'lui3', 'lui6', 'lui 6', 'luis2', 'luis4', 'luis5', 'luis6') then 'Luis'
             else initcap(trim(first_name))
         end                                                         as first_name,
 
         -- Limpieza de last_name
         case
-            when lower(last_name) in ('rodrigue', 'rodríguez', 'rodriguez') then 'Rodríguez'
-            when lower(last_name) in ('fernandez', 'fernández', 'fernan') then 'Fernández'
+            when lower(last_name) in ('rodrigue', 'rodríguez', 'rodriguez', 'rodrígue') then 'Rodríguez'
+            when lower(last_name) in ('fernandez', 'fernández', 'fernan', 'fernande', 'fernán') then 'Fernández'
             when lower(last_name) in ('lopez', 'lópez', 'lope', 'lópe') then 'López'
             when lower(last_name) in ('garcía', 'garci', 'garcí', 'garcia') then 'García'
             when lower(last_name) in ('gonzalez', 'gonzále', 'gonzale', 'gonzález') then 'González'
-            when lower(last_name) in ('martinez', 'martíne', 'martin') then 'Martínez'
+            when lower(last_name) in ('martinez', 'martíne', 'martin', 'martínez') then 'Martínez'
             else initcap(trim(last_name))
         end                                                         as last_name,
 
@@ -118,19 +118,30 @@ with base as (
                 when lower(operator) in ('claro', 'clar', 'cla ') then 'claro'
                 when lower(operator) in ('movistar', 'movstr','movistr','mov') then 'movistar'
                 when lower(operator) in ('tigo', 'tgo','tig') then 'tigo'
-                when lower(operator) in ('wom', 'won','w0m') then 'wom'
+                when lower(operator) in ('wom', 'won','w0m','WOM','W0M') then 'wom'
                 else operator
             end
         ))                                                         as operator,
 
-        lower(trim(plan_type))                                     as plan_type,
+        case
+            when lower(trim(plan_type)) in ('ctrl', 'control') then 'control'
+            when lower(trim(plan_type)) in ('pre', 'prepago') then 'prepago'
+            when lower(trim(plan_type)) in ('post_pago', 'post-pago', 'pos', 'pospago') then 'pospago'
+            else 'undefined'
+        end                                    as plan_type,
 
         case
             when registration_date between '2000-01-01' and current_date
             then registration_date
         end                                                         as registration_date,
 
-        lower(trim(status))                                         as status,
+        case
+             when lower(trim(status)) in ('active', 'activo', 'válido') then 'active'
+             when lower(trim(status)) in ('inactive', 'inactivo', 'invalid') then 'inactive'
+             when lower(trim(status)) in ('suspended', 'suspendido') then 'suspended'
+             else 'undefined'
+        end                                                             as status,
+                                        
 
         case
             when credit_score between 0 and 1000 then credit_score

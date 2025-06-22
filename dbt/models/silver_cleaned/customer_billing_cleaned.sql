@@ -62,6 +62,9 @@ select
     case when data_usage_current_month >= 0
          then data_usage_current_month end as data_usage_current_month,
 
-    monthly_data_gb,
+    case when monthly_data_gb < 0
+         then 0
+         else monthly_data_gb end as monthly_data_gb,
+
     ingestion_timestamp
 from referenced
