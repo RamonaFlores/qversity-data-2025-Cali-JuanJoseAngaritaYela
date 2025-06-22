@@ -50,7 +50,7 @@ docker-compose.override.yml
 # PostgreSQL volumes (if manually persisted)
 pg_data/
 postgres_data/
-*.sql
+
 
 # Local data
 data/raw/*
