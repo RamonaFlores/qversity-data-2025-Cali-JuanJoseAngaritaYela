@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api.routers.gold import router as gold_router  # 👈 importa el router, no el módulo
+from app.api.routers.gold import router as gold_router  # 👈 importa el router, no el módulo
 
 app = FastAPI(
     title="Qversity – Gold Layer API",
