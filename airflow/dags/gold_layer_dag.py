@@ -22,7 +22,7 @@ with DAG(
     dbt_run_gold = BashOperator(
         task_id="run_dbt_gold_models",
         bash_command="""
-        cd /dbt/qversity-data-2025-Cali-JuanJoseAngaritaYela &&
+        cd /opt/airflow/dbt &&
         dbt run --select gold
         """,
     )
@@ -30,7 +30,7 @@ with DAG(
     dbt_test_gold = BashOperator(
         task_id="test_dbt_gold_models",
         bash_command="""
-        cd /dbt/qversity-data-2025-Cali-JuanJoseAngaritaYela &&
+        cd /opt/airflow/dbt &&
         dbt test --select gold
         """,
     )

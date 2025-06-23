@@ -31,4 +31,3 @@ python-dotenv==1.0.0
 # Utility libraries
 requests==2.31.0
 sqlalchemy==2.0.20
-
