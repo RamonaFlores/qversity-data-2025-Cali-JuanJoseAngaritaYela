@@ -27,8 +27,7 @@ Each insight is derived from a Gold-layer model and supports data-driven decisio
 ## 👤 Participant
 
 - **Name**: Juan José Angarita Yela
-- **Email**: jj.angaritay@correounivalle.edu.co
-
+- **Email**: angaritayelaj@gmail.com
 ---
 
 ## 🧱 Architecture
