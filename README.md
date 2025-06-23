@@ -108,14 +108,7 @@ dbt docs generate
 dbt docs serve
 ```
 
-### FastAPI
 
-```bash
-# Swagger UI available at:
-http://localhost:8000/docs
-```
-
----
 
 ## 🧪 Development & Testing
 
@@ -123,6 +116,13 @@ http://localhost:8000/docs
 
 1. Add new DAG in `airflow/dags/`
 2. Airflow auto-detects it
+3. Run DAGS in the following order:
+   * Bronze_ingestion_consume
+   * dbt_setup
+   * silver_transform_customers
+   * silver_cleaned_dag
+   * silver_cleaned_tests_dag
+   * dbt_run_gold_layer
 
 ### dbt Models
 
