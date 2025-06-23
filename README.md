@@ -1,66 +1,92 @@
+
 # Qversity Project – Cali 2025
 
-Una plataforma local de datos que implementa arquitectura de tipo Lakehouse (Bronze → Silver → Gold) utilizando Docker Compose, Airflow, DBT, PostgreSQL y FastAPI.
+A local data platform that implements a Lakehouse architecture (Bronze → Silver → Gold) using Docker Compose, Airflow, dbt, PostgreSQL, and FastAPI.
 
-## Arquitectura
+## 🧠 Overview
 
-Este proyecto sigue el patrón Medallion (Bronze, Silver, Gold):
+This project structures and transforms a messy mobile customer dataset into business-ready analytics using the **Medallion Architecture**:
 
-- **Bronze Layer**: Ingesta de datos crudos desde una fuente JSON pública (S3), validación con JSON Schema y enriquecimiento con metadatos.
-- **Silver Layer**: Transformación estructurada de los datos crudos en modelos relacionales intermedios.
-- **Silver Cleaned**: Limpieza avanzada, validación de calidad de datos y normalización.
-- **Gold Layer**: Modelos analíticos listos para negocio, segmentaciones, agregaciones y vistas para dashboards o APIs.
+- **Bronze Layer**: Raw data ingestion from a public JSON (S3), schema validation, and metadata enrichment.
+- **Silver Layer**: Structured transformation into intermediate relational models.
+- **Silver Cleaned**: Advanced data cleaning, quality validation, and normalization.
+- **Gold Layer**: Final business analytics models – customer segmentation, revenue analysis, ARPU by plan, device preferences, and more.
 
-## Estructura del Proyecto
+### 📂 Business Insights
+
+The folder [`/business_insights/`](./business_insights/) contains over **20 Markdown reports** covering:
+- Device brand trends by country, operator, and plan
+- Popular services and revenue-driving combinations
+- Payment behavior and credit score correlation
+- Customer acquisition and churn trends
+- Demographic distributions (age, location, segment)
+- Revenue breakdowns by region, plan, and customer type
+
+Each insight is derived from a Gold-layer model and supports data-driven decision-making for telco strategy and optimization.
+
+## 👤 Participant
+
+- **Name**: Juan José Angarita Yela
+- **Email**: jj.angaritay@correounivalle.edu.co
+
+---
+
+## 🧱 Architecture
 
 ```
 /
-├── airflow/                   # DAGs de Airflow y lógica ETL por capa
-│   ├── bronze/                # Extracción, validación y carga inicial
-│   ├── dags/                  # DAGs para cada capa
-│   ├── tests/                 # Pruebas de integración para DAGs
-├── app/                       # Backend en FastAPI para exponer la capa Gold
-│   ├── api/routers/           # Endpoints REST para modelos gold
-│   ├── core/                  # Configuración de DB y modelos SQLAlchemy
-│   ├── db/                    # Repositorios y utilidades
-│   ├── schemas/               # Esquemas Pydantic
-│   └── main.py                # Punto de entrada de la API
-├── dbt/                       # Proyecto DBT con modelos SQL por capa
+├── airflow/                   # Airflow DAGs and ETL logic
+│   ├── bronze/                # Ingestion, validation, raw load
+│   ├── dags/                  # Orchestration DAGs per layer
+│   └── tests/                 # Integration tests for DAGs
+├── app/                       # FastAPI backend to expose Gold-layer models
+│   ├── api/routers/           # REST endpoints
+│   ├── core/                  # SQLAlchemy models and DB setup
+│   ├── db/                    # Repositories and logic
+│   └── schemas/               # Pydantic schemas
+├── dbt/                       # dbt project with layered models
 │   └── models/
 │       ├── bronze/
 │       ├── silver/
 │       ├── silver_cleaned/
 │       └── gold/
-├── docker-compose.yml         # Orquestación de contenedores
-├── Dockerfile.airflow         # Imagen de Airflow custom
-└── practices.txt              # Bitácora y notas del equipo
+├── business_insights/        # Markdown files with analytical summaries
+├── docker-compose.yml        # Container orchestration
+├── Dockerfile.airflow        # Custom Airflow image
+└── practices.txt             # Project logbook and notes
 ```
 
-## Instrucciones Rápidas
+---
 
-### Requisitos
+## 🚀 Quick Start
+
+### Requirements
 
 - Docker + Docker Compose
-- Al menos 4GB de RAM disponibles
+- At least 4GB of available RAM
 
-### Inicialización
+### Setup
 
 ```bash
-# Clona el repositorio
+# Clone the repo
 git clone <repo-url>
 cd qversity-data-2025-Cali-JuanJoseAngaritaYela
 
-# Inicia los servicios
+# Start containers
 docker compose up -d
 ```
 
-## Puntos de Acceso
+---
 
-- **Airflow UI**: http://localhost:8080 (admin/admin)
-- **API FastAPI**: http://localhost:8000/docs
+## 🔌 Access Points
+
+- **Airflow UI**: [http://localhost:8080](http://localhost:8080) (admin/admin)
+- **FastAPI Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **PostgreSQL**: `localhost:5432` (user: `qversity-admin`, db: `qversity`)
 
-## Comandos Frecuentes
+---
+
+## 🛠 Common Commands
 
 ### Airflow
 
@@ -69,7 +95,7 @@ docker compose logs -f airflow
 docker compose exec airflow airflow dags trigger bronze_ingest_customers
 ```
 
-### DBT
+### dbt
 
 ```bash
 docker compose exec airflow bash
@@ -86,36 +112,40 @@ dbt docs serve
 ### FastAPI
 
 ```bash
-# Swagger UI
+# Swagger UI available at:
 http://localhost:8000/docs
 ```
 
-## Desarrollo
+---
+
+## 🧪 Development & Testing
 
 ### DAGs
 
-1. Crear archivo en `airflow/dags/`
-2. Airflow lo detectará automáticamente
+1. Add new DAG in `airflow/dags/`
+2. Airflow auto-detects it
 
-### Modelos DBT
+### dbt Models
 
-1. SQL en `dbt/models/{capa}/`
-2. Documentación + tests
-3. Ejecutar `dbt run`
+1. Create SQL files in `dbt/models/{layer}/`
+2. Document and test them
+3. Run with `dbt run`
 
-### Endpoints FastAPI
+### FastAPI Endpoints
 
-1. Modelo en `app/core/models.py`
-2. Esquema en `app/schemas`
-3. Ruta en `app/api/routers/gold.py` o `gold_auto.py`
+1. Define SQLModel in `app/core/models.py`
+2. Create Pydantic schema in `app/schemas`
+3. Add route to `app/api/routers/gold.py`
 
-## Pruebas
+### Tests
 
 ```bash
 pytest airflow/tests/test_bronze_ingest_customers.py -vv
 ```
 
-## Monitoreo
+---
+
+## 📈 Monitoring
 
 ```bash
 docker compose logs -f airflow
@@ -124,10 +154,12 @@ docker compose logs -f postgres
 docker compose ps
 ```
 
-## Limpieza
+---
+
+## 🧹 Cleanup
 
 ```bash
 docker compose down
-docker compose down -v      # ⚠️ borra volúmenes
+docker compose down -v      # ⚠️ removes volumes
 docker compose down --rmi all
 ```
