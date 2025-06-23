@@ -143,11 +143,26 @@ with base as (
         --  Timestamp from ingestion process
         ingestion_timestamp
     from deduplicated
+
+), final as (
+
+    -- 3 Deduplicate again by customer_id to enforce unique constraint
+    select *
+    from (
+        select *,
+               row_number() over (
+                   partition by customer_id
+                   order by ingestion_timestamp desc
+               ) as rn
+        from limpiado
+    ) z
+    where rn = 1
+
 )
 
--- 2 Final filter: only include rows with valid age, email, and customer_id
+-- 4 Final filter: only include rows with valid age, email, and customer_id
 select *
-from limpiado
+from final
 where age is not null
   and email is not null
   and customer_id is not null

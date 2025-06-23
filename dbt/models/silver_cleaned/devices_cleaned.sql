@@ -56,9 +56,22 @@ limpiado as (
         ingestion_timestamp
 
     from referenced
+),
+
+-- Final deduplication by device_id to ensure test success
+final as (
+    select *
+    from (
+        select *,
+               row_number() over (
+                   partition by device_id
+                   order by ingestion_timestamp desc
+               ) as rn
+        from limpiado
+    ) z
+    where rn = 1
 )
 
---  Final selection: filter out records with null customer_id
 select *
-from limpiado
+from final
 where customer_id is not null

@@ -59,8 +59,22 @@ cleaned as (
 
     -- Filter again to exclude unexpected service types
     where lower(service) in ('data','voice','sms','tv','bundle')
+),
+
+-- Final deduplication step to ensure unique service_id
+final as (
+    select *
+    from (
+        select *,
+               row_number() over (
+                   partition by service_id
+                   order by ingestion_timestamp desc
+               ) as rn
+        from cleaned
+    ) z
+    where rn = 1
 )
 
 -- Final result set to be materialized
 select *
-from cleaned
+from final

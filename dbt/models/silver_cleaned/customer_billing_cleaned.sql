@@ -50,6 +50,20 @@ referenced as (
     select b.*
     from with_billing_id b
     join {{ ref('customers_cleaned') }} c using (customer_id)
+),
+
+-- Final deduplication by billing_id to avoid test errors
+final as (
+    select *
+    from (
+        select *,
+               row_number() over (
+                   partition by billing_id
+                   order by ingestion_timestamp desc
+               ) as rn_final
+        from referenced
+    ) x
+    where rn_final = 1
 )
 
 -- Final output with validation and corrections applied
@@ -80,4 +94,4 @@ select
 
     -- Track ingestion time for lineage and audit
     ingestion_timestamp
-from referenced
+from final

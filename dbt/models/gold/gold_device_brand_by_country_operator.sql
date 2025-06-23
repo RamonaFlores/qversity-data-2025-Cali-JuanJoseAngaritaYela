@@ -2,6 +2,7 @@
     materialized = 'table'
 ) }}
 
+-- Base CTE: join customers with their associated device brands
 with base as (
 
     select
@@ -11,12 +12,15 @@ with base as (
         d.brand
     from {{ ref('customers_cleaned') }} c
     join {{ ref('devices_cleaned') }} d using (customer_id)
+
+    -- Filter out records with null country, operator, or brand
     where c.country is not null
       and c.operator is not null
       and d.brand is not null
 
 ),
 
+-- Count number of distinct users per brand, country, and operator
 device_counts as (
 
     select
@@ -29,6 +33,7 @@ device_counts as (
 
 ),
 
+-- Count total number of distinct users per country and operator
 total_counts as (
 
     select
@@ -40,6 +45,7 @@ total_counts as (
 
 ),
 
+-- Final output: calculate percentage share of each device brand per country/operator
 final as (
 
     select
@@ -47,6 +53,8 @@ final as (
         dc.operator,
         dc.brand,
         dc.user_count,
+
+        -- Compute percentage of users using each brand
         round(100.0 * dc.user_count / tc.total_users, 2) as percentage
     from device_counts dc
     join total_counts tc
@@ -55,4 +63,5 @@ final as (
 
 )
 
+-- Final result with device usage distribution by geography and operator
 select * from final
